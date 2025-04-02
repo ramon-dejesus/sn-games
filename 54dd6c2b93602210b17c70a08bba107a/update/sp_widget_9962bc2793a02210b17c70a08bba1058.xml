@@ -2,51 +2,56 @@
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
         <client_script><![CDATA[api.controller = function() {
-  /* widget controller */
-  var c = this;
+    /* widget controller */
+    var c = this;
 
-  c.mode = c.data.options.default_game_mode || "pvp"; // default game mode
-  c.board = Array(9).fill("");
-  c.currentPlayer = "X";
-  c.winner = null;
-  c.isDraw = false;
-  c.backgroundColorClass = c.data.options.background_color_class || "bg-primary";
-	c.fontColorHex = c.data.options.font_color_hex || "#000000";
-	c.borderColorHex = c.fontColorHex;
-  c.fontFamily = c.data.options.font_family || "Arial, sans-serif";
-	c.logoUrl = c.data.options.logo_url || "../sn_games_logo.png";
-	c.providerUrl = c.data.options.provider_url || "https://github.com/ramon-dejesus/sn-games"
-
-
-  c.makeMove = function(index) {
-    if (c.board[index] || c.winner) return;
-    c.board[index] = c.currentPlayer;
-    if (checkWinner()) {
-      c.winner = c.currentPlayer;
-    } else if (c.board.every(cell => cell)) {
-      c.isDraw = true;
-    } else {
-      c.currentPlayer = c.currentPlayer === "X" ? "O" : "X";
-    }
-  };
-
-  function checkWinner() {
-    const combos = [
-      [0,1,2], [3,4,5], [6,7,8],
-      [0,3,6], [1,4,7], [2,5,8],
-      [0,4,8], [2,4,6]
-    ];
-    return combos.some(([a, b, cIdx]) => {
-      return c.board[a] && c.board[a] === c.board[b] && c.board[a] === c.board[cIdx];
-    });
-  }
-
-  c.resetGame = function() {
+    c.mode = c.data.options.default_game_mode || "pvp"; // default game mode
     c.board = Array(9).fill("");
     c.currentPlayer = "X";
     c.winner = null;
     c.isDraw = false;
-  };
+    c.backgroundColorClass = c.data.options.background_color_class || "bg-primary";
+    c.fontColorHex = c.data.options.font_color_hex || "#000000";
+    c.borderColorHex = c.fontColorHex;
+    c.fontFamily = c.data.options.font_family || "Arial, sans-serif";
+    c.logoUrl = c.data.options.logo_url || "../sn_games_logo.png";
+    c.providerUrl = c.data.options.provider_url || "https://github.com/ramon-dejesus/sn-games";
+
+
+    c.makeMove = function(index) {
+        if (c.board[index] || c.winner) return;
+        c.board[index] = c.currentPlayer;
+        if (checkWinner()) {
+            c.winner = c.currentPlayer;
+        } else if (c.board.every(cell => cell)) {
+            c.isDraw = true;
+        } else {
+            c.currentPlayer = c.currentPlayer === "X" ? "O" : "X";
+        }
+    };
+
+    function checkWinner() {
+        const combos = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+        return combos.some(([a, b, cIdx]) => {
+            return c.board[a] && c.board[a] === c.board[b] && c.board[a] === c.board[cIdx];
+        });
+    }
+
+    c.resetGame = function() {
+        c.board = Array(9).fill("");
+        c.currentPlayer = "X";
+        c.winner = null;
+        c.isDraw = false;
+    };
 };]]></client_script>
         <controller_as>c</controller_as>
         <css>/* Tic Tac Toe Widget Styles */
@@ -228,11 +233,11 @@
         <public>false</public>
         <roles/>
         <script><![CDATA[(function() {
-  /* populate the 'data' object */
-  /* e.g., data.table = $sp.getValue('table'); */
-	
-	// Initialize default widget options if needed
-  data.options = options;
+    /* populate the 'data' object */
+    /* e.g., data.table = $sp.getValue('table'); */
+
+    // Initialize default widget options if needed
+    data.options = options;
 
 })();]]></script>
         <servicenow>false</servicenow>
@@ -240,14 +245,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-02 18:01:25</sys_created_on>
         <sys_id>9962bc2793a02210b17c70a08bba1058</sys_id>
-        <sys_mod_count>111</sys_mod_count>
+        <sys_mod_count>112</sys_mod_count>
         <sys_name>Tic Tac Toe Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_9962bc2793a02210b17c70a08bba1058</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-02 20:32:12</sys_updated_on>
+        <sys_updated_on>2025-04-02 20:38:18</sys_updated_on>
         <template><![CDATA[<!-- Widget Body Template -->
 <div class="sn-games-tictactoe p-4" ng-class="c.backgroundColorClass" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex }">
   <div class="text-center mb-4">
