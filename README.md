@@ -52,16 +52,14 @@ To run this scoped widget, you’ll need:
 
 ## 🏗️ Build & Usage
 
-1. **Clone this repo**
-```bash
-git clone https://github.com/ramon-dejesus/sn-games.git
-```
+1. **Download desired Release UpdateSet**
+   - [Releases](https://github.com/ramon-dejesus/sn-games/releases)
 
-2. **Import into ServiceNow Studio**
+3. **Import into ServiceNow**
    - Go to **System Applications > Studio**
-   - File → Import from XML → select `scoped-app.xml`
+   - File → Import from XML → select `update-set.xml`
 
-3. **Deploy the Widget**
+4. **Deploy the Widget**
    - Go to **Service Portal > Pages**
    - Add the `TicTacToe` widget to a desired page
    - Configure widget options (branding, font, etc.)
