@@ -1,14 +1,219 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller=function() {
+        <client_script><![CDATA[api.controller = function() {
   /* widget controller */
   var c = this;
+
+  c.mode = "pvp"; // default game mode
+  c.board = Array(9).fill("");
+  c.currentPlayer = "X";
+  c.winner = null;
+  c.isDraw = false;
+  c.backgroundColorClass = c.data.options.background_color_class || "bg-primary";
+	c.fontColorHex = c.data.options.font_color_hex || "#000000";
+	c.borderColorHex = c.fontColorHex;
+  c.fontFamily = c.data.options.font_family || "Arial, sans-serif";
+	c.logoUrl = c.data.options.logo_url || "../sn_games_logo.png";
+	c.providerUrl = c.data.options.provider_url || "https://github.com/ramon-dejesus/sn-games"
+
+
+  c.makeMove = function(index) {
+    if (c.board[index] || c.winner) return;
+    c.board[index] = c.currentPlayer;
+    if (checkWinner()) {
+      c.winner = c.currentPlayer;
+    } else if (c.board.every(cell => cell)) {
+      c.isDraw = true;
+    } else {
+      c.currentPlayer = c.currentPlayer === "X" ? "O" : "X";
+    }
+  };
+
+  function checkWinner() {
+    const combos = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
+    return combos.some(([a, b, cIdx]) => {
+      return c.board[a] && c.board[a] === c.board[b] && c.board[a] === c.board[cIdx];
+    });
+  }
+
+  c.resetGame = function() {
+    c.board = Array(9).fill("");
+    c.currentPlayer = "X";
+    c.winner = null;
+    c.isDraw = false;
+  };
 };]]></client_script>
         <controller_as>c</controller_as>
-        <css/>
+        <css>/* Tic Tac Toe Widget Styles */
+
+.sn-games-tictactoe {
+  font-family: var(--font-family, sans-serif);
+}
+
+.sn-games-tictactoe .game-board-options {
+	width: 100%;
+  max-width: 30em;
+  margin: 0 auto;
+}
+
+.sn-games-tictactoe .form-control {
+  width: 100%;
+  max-width: 200px;
+}
+
+/* Game mode label + picker inline and styled cleanly */
+.game-mode-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.game-mode-inline label {
+  margin: 0;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.game-mode-inline select {
+  display: inline-block;
+  width: auto;
+  min-width: 150px;
+}
+
+.sn-games-tictactoe .btn {
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+}
+
+.sn-games-tictactoe .game-board {
+ 	width: 100%; 
+  max-width: 30em;
+}
+
+.sn-games-tictactoe .grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.sn-games-tictactoe .grid div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background-color: var(--cell-bg, #ffffff);  
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.sn-games-tictactoe .grid div:hover {
+  background-color: var(--cell-hover-bg, #f1f1f1);
+}
+
+.sn-games-tictactoe .text-center {
+  text-align: center;
+}
+
+.sn-games-tictactoe .text-lg {
+  font-size: 1.25rem;
+}
+
+.sn-games-tictactoe .font-bold {
+  font-weight: bold;
+}
+
+/* Utility Helpers */
+.center-cols {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.center-cols &gt; .col-xs-4 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Padding Helpers - Bootstrap 3-style utility classes */
+
+/* All sides */
+.p-0 { padding: 0 !important; }
+.p-1 { padding: 0.25rem !important; }
+.p-2 { padding: 0.5rem !important; }
+.p-3 { padding: 1rem !important; }
+.p-4 { padding: 1.5rem !important; }
+.p-5 { padding: 2rem !important; }
+
+/* Padding Top */
+.pt-0 { padding-top: 0 !important; }
+.pt-1 { padding-top: 0.25rem !important; }
+.pt-2 { padding-top: 0.5rem !important; }
+.pt-3 { padding-top: 1rem !important; }
+.pt-4 { padding-top: 1.5rem !important; }
+.pt-5 { padding-top: 2rem !important; }
+
+/* Padding Bottom */
+.pb-0 { padding-bottom: 0 !important; }
+.pb-1 { padding-bottom: 0.25rem !important; }
+.pb-2 { padding-bottom: 0.5rem !important; }
+.pb-3 { padding-bottom: 1rem !important; }
+.pb-4 { padding-bottom: 1.5rem !important; }
+.pb-5 { padding-bottom: 2rem !important; }
+
+/* Padding Left */
+.pl-0 { padding-left: 0 !important; }
+.pl-1 { padding-left: 0.25rem !important; }
+.pl-2 { padding-left: 0.5rem !important; }
+.pl-3 { padding-left: 1rem !important; }
+.pl-4 { padding-left: 1.5rem !important; }
+.pl-5 { padding-left: 2rem !important; }
+
+/* Padding Right */
+.pr-0 { padding-right: 0 !important; }
+.pr-1 { padding-right: 0.25rem !important; }
+.pr-2 { padding-right: 0.5rem !important; }
+.pr-3 { padding-right: 1rem !important; }
+.pr-4 { padding-right: 1.5rem !important; }
+.pr-5 { padding-right: 2rem !important; }
+
+/* Padding X (Left &amp; Right) */
+.px-0 { padding-left: 0 !important; padding-right: 0 !important; }
+.px-1 { padding-left: 0.25rem !important; padding-right: 0.25rem !important; }
+.px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+.px-3 { padding-left: 1rem !important; padding-right: 1rem !important; }
+.px-4 { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
+.px-5 { padding-left: 2rem !important; padding-right: 2rem !important; }
+
+/* Padding Y (Top &amp; Bottom) */
+.py-0 { padding-top: 0 !important; padding-bottom: 0 !important; }
+.py-1 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+.py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+.py-3 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+.py-4 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+.py-5 { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+
+</css>
         <data_table>sp_instance</data_table>
-        <demo_data/>
+        <demo_data>{
+  "options": {
+    	"background_color_class": "bg-primary",
+    	"logo_url": "../sn_games_logo.png",
+    	"font_family": "Arial, sans-serif",
+    	"default_game_mode": "pvp",
+			"font_color_hex": "#000000",
+			"provider_url": "https://github.com/ramon-dejesus/sn-games"
+  }
+}</demo_data>
         <description>Fully scoped Tic Tac Toe game widget for the ServiceNow Service Portal. Supports PvP and PvC modes, custom branding via widget options, reset functionality, and clean deployment as a scoped application.</description>
         <docs/>
         <field_list/>
@@ -19,12 +224,15 @@
   
 }]]></link>
         <name>Tic Tac Toe Game Widget</name>
-        <option_schema/>
+        <option_schema>[{"hint":"CSS class for the primary background color.","name":"background_color_class","section":"Presentation","default_value":"bg-primary","label":"Background Color Class","type":"string"},{"hint":"Optional logo image URL displayed in the widget.","name":"logo_url","section":"Presentation","default_value":"","label":"Logo URL","type":"string"},{"hint":"Custom font-family to apply inside the widget.","name":"font_family","section":"Presentation","default_value":"Arial, sans-serif","label":"Font Family","type":"string"},{"hint":"Player vs Player (PVP), Player vs CPU (PVC)","name":"default_game_mode","section":"Behavior","default_value":"pvp","label":"Default Game Mode (Player vs CPU)","type":"choice","choices":[{"label":"pvp,pvc","value":"pvp,pvc"}]},{"hint":"#000, Hexadecimal color value for the font text of game.","name":"font_color_hex","section":"Presentation","default_value":"#000000","label":"Font Color Hex","type":"string"},{"hint":"This was brought to you by SN GAMES! (Modify repo url or your website here.)","name":"provider_url","section":"Documentation","default_value":"https://github.com/ramon-dejesus/sn-games","label":"Provider URL","type":"string"}]</option_schema>
         <public>false</public>
         <roles/>
         <script><![CDATA[(function() {
   /* populate the 'data' object */
   /* e.g., data.table = $sp.getValue('table'); */
+	
+	// Initialize default widget options if needed
+  data.options = options;
 
 })();]]></script>
         <servicenow>false</servicenow>
@@ -32,16 +240,57 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-02 18:01:25</sys_created_on>
         <sys_id>9962bc2793a02210b17c70a08bba1058</sys_id>
-        <sys_mod_count>3</sys_mod_count>
+        <sys_mod_count>108</sys_mod_count>
         <sys_name>Tic Tac Toe Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_9962bc2793a02210b17c70a08bba1058</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-02 18:03:15</sys_updated_on>
-        <template><![CDATA[<div>
-<!-- your widget template -->
-</div>]]></template>
+        <sys_updated_on>2025-04-02 20:24:55</sys_updated_on>
+        <template><![CDATA[<!-- Widget Body Template -->
+<div class="sn-games-tictactoe p-4" ng-class="c.backgroundColorClass" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex }">
+  <div class="text-center mb-4">
+    <h2 class="text-xl font-bold">Tic Tac Toe</h2>
+  </div>
+
+  <div class="game-board-options row pr-2 pl-2 pb-2 center-cols">
+    <div class="col-xs-7 text-left" style="display: contents;">
+      <div class="game-mode-inline">
+        <label for="mode">Game Mode:</label>
+        <select id="mode"
+                class="form-control input-sm"
+                ng-model="c.mode"
+                ng-change="c.resetGame()">
+          <option value="pvp">Player vs Player</option>
+          <option value="pvc">Player vs CPU (Coming Soon)</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <button class="btn btn-default" ng-click="c.resetGame()">Reset</button>
+    </div>
+    <div class="col-xs-2 text-center">      
+      <p class="text-lg">Winner: <span ng-if="c.winner" class="font-bold">{{c.winner}}</span><span class="font-bold" ng-if="!c.winner && c.isDraw">Draw!</span><span class="font-bold" ng-if="!c.winner && !c.isDraw">?</span></p>
+    </div>
+  </div>
+
+
+  <div class="game-board grid grid-cols-3 gap-2 center-block">
+    <div ng-style="{ 'border-color': c.borderColor }" ng-repeat="cell in c.board track by $index"
+         class="w-16 h-16 border border-gray-500 flex items-center justify-center text-2xl cursor-pointer"
+         ng-click="c.makeMove($index)">
+      {{cell}}
+    </div>
+  </div>
+
+  <div class="text-center pt-5 pb-4">
+    <a ng-href="{{c.providerUrl}}" target="_blank" ng-style="{'color': c.fontColorHex}" class="text-muted small">
+      Brought to you by <strong>SN GAMES</strong>
+      <img ng-if="c.logoUrl" ng-src="{{c.logoUrl}}" alt="Game Logo" class="img-rounded img-responsive" style="display:inline-block; height: 1.5em; vertical-align: middle; margin-left: 5px;">
+    </a>
+  </div>
+</div>
+]]></template>
     </sp_widget>
 </record_update>
