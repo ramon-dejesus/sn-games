@@ -124,8 +124,8 @@ git clone https://github.com/ramon-dejesus/sn-games.git
 
 ## 🎨 Customization Notes
 
-- All options are non-destructive. You can override them without editing code.
-- Visual elements (reset button, turn indicator) adapt to theme colors.
+- No branding? No problem. The widget will fallback to neutral colors for minimal styling impacts.
+- All widget options are non-destructive. You can override them without editing code.
 
 ## 📜 Contributors
 
