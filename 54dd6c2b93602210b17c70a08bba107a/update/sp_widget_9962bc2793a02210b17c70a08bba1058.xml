@@ -5,7 +5,7 @@
   /* widget controller */
   var c = this;
 
-  c.mode = "pvp"; // default game mode
+  c.mode = c.data.options.default_game_mode || "pvp"; // default game mode
   c.board = Array(9).fill("");
   c.currentPlayer = "X";
   c.winner = null;
@@ -206,12 +206,12 @@
         <data_table>sp_instance</data_table>
         <demo_data>{
   "options": {
-    	"background_color_class": "bg-primary",
-    	"logo_url": "../sn_games_logo.png",
-    	"font_family": "Arial, sans-serif",
-    	"default_game_mode": "pvp",
-			"font_color_hex": "#000000",
-			"provider_url": "https://github.com/ramon-dejesus/sn-games"
+    		"background_color_class": "bg-primary",
+    		"logo_url": "../sn_games_logo.png",
+    		"font_family": "Arial, sans-serif",
+    		"default_game_mode": "pvp",
+				"font_color_hex": "#000000",
+				"provider_url": "https://github.com/ramon-dejesus/sn-games"
   }
 }</demo_data>
         <description>Fully scoped Tic Tac Toe game widget for the ServiceNow Service Portal. Supports PvP and PvC modes, custom branding via widget options, reset functionality, and clean deployment as a scoped application.</description>
@@ -240,14 +240,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-02 18:01:25</sys_created_on>
         <sys_id>9962bc2793a02210b17c70a08bba1058</sys_id>
-        <sys_mod_count>108</sys_mod_count>
+        <sys_mod_count>111</sys_mod_count>
         <sys_name>Tic Tac Toe Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_9962bc2793a02210b17c70a08bba1058</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-02 20:24:55</sys_updated_on>
+        <sys_updated_on>2025-04-02 20:32:12</sys_updated_on>
         <template><![CDATA[<!-- Widget Body Template -->
 <div class="sn-games-tictactoe p-4" ng-class="c.backgroundColorClass" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex }">
   <div class="text-center mb-4">
