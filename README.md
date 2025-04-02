@@ -125,11 +125,11 @@ git clone https://github.com/ramon-dejesus/sn-games.git
 This repository is released under a **dual license model**:
 
 - 🆓 **Creative Commons Attribution 4.0 International (CC BY 4.0)**\
-  For non-commercial and educational use with required attribution. See [`LICENSE`](../LICENSE).
+  For non-commercial and educational use with required attribution. See [`LICENSE.md`](../main/LICENSE.md).
 
 - 💼 **Commercial License Required for Business Use**\
   Any commercial, enterprise, or revenue-generating usage requires a commercial license with agreed royalties or fees.\
-  See [`COMMERCIAL_LICENSE.md`](../COMMERCIAL_LICENSE.md) or contact [ramon@dejesus.services](mailto\:ramon@dejesus.services) to obtain permission.
+  See [`COMMERCIAL_LICENSE.md`](../main/COMMERCIAL_LICENSE.md) or contact [ramon@dejesus.services](mailto\:ramon@dejesus.services) to obtain permission.
 
 © 2025 DE JESUS SERVICES, INC. All rights reserved.
 
