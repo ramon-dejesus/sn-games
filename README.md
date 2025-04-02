@@ -12,7 +12,7 @@ Contact: [ramon@dejesus.services](mailto:ramon@dejesus.services)
 
 ---
 
-## 📦 Release 1: Tic Tac Toe
+## 📦 Release 1: Tic Tac Toe Widget
 
 This initial release features a fully functional **Tic Tac Toe** game:
 
@@ -45,9 +45,8 @@ This initial release features a fully functional **Tic Tac Toe** game:
 
 To run this scoped widget, you’ll need:
 
-- ServiceNow Paris+ instance (tested on Tokyo & Vancouver)
+- ServiceNow Xanadu+ instance (tested on Yokohama and Xanadu)
 - Access to Studio & Service Portal
-- AngularJS 1.x support (OOTB with Service Portal)
 - Scoped app import permissions
 
 ---
@@ -99,14 +98,14 @@ git clone https://github.com/ramon-dejesus/sn-games.git
 📅 Release Date: 2025-04-02  
 🎮 Game Included: **Tic Tac Toe**
 
-✅ **Release 1 Epics & Features** ([View GitHub Issues](https://github.com/ramon-dejesus/sn-games/issues)):
+✅ **Release 1 Epics & Features** ([View GitHub Issues](https://github.com/ramon-dejesus/sn-games/milestone/1?closed=1)):
 
 - [✔️ Scoped deployment under `x_sn_games` namespace](https://github.com/ramon-dejesus/sn-games/issues/1)
-- [✔️ Player vs Player and Player vs CPU logic](https://github.com/ramon-dejesus/sn-games/issues/2)
-- [✔️ Turn-based flow with CPU logic and alternating turns](https://github.com/ramon-dejesus/sn-games/issues/3)
-- [✔️ 508-compliance with keyboard & screen reader support](https://github.com/ramon-dejesus/sn-games/issues/4)
-- [✔️ Reset button and game mode toggle](https://github.com/ramon-dejesus/sn-games/issues/5)
-- [✔️ Custom branding via widget options](https://github.com/ramon-dejesus/sn-games/issues/6)
+- [✔️ Player vs Player logic](https://github.com/ramon-dejesus/sn-games/issues/2)
+- [✔️ Player vs CPU logic](https://github.com/ramon-dejesus/sn-games/issues/3)
+- - [✔️ Custom branding via widget options](https://github.com/ramon-dejesus/sn-games/issues/4)
+- [✔️ 508-compliance with keyboard & screen reader support](https://github.com/ramon-dejesus/sn-games/issues/5)
+
 
 ---
 
