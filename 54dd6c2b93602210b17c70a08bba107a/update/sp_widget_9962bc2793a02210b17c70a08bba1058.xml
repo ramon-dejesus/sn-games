@@ -1,58 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller = function() {
-    /* widget controller */
-    var c = this;
+        <client_script><![CDATA[api.controller = function($scope) {
+  /* widget controller */
+  var c = this;
 
-    c.mode = c.data.options.default_game_mode || "pvp"; // default game mode
-    c.board = Array(9).fill("");
-    c.currentPlayer = "X";
-    c.winner = null;
-    c.isDraw = false;
-    c.backgroundColorClass = c.data.options.background_color_class || "bg-primary";
-    c.fontColorHex = c.data.options.font_color_hex || "#000000";
-    c.borderColorHex = c.fontColorHex;
-    c.fontFamily = c.data.options.font_family || "Arial, sans-serif";
-    c.logoUrl = c.data.options.logo_url || "../sn_games_logo.png";
-    c.providerUrl = c.data.options.provider_url || "https://github.com/ramon-dejesus/sn-games";
+  // Widget Option Bindings
+  c.mode = c.data.options.default_game_mode || "pvp";
+  c.backgroundColorClass = c.data.options.background_color_class || "bg-primary";
+  c.fontColorHex = c.data.options.font_color_hex || "#000000";
+  c.borderColorHex = c.fontColorHex;
+  c.fontFamily = c.data.options.font_family || "Arial, sans-serif";
+  c.logoUrl = c.data.options.logo_url || "../sn_games_logo.png";
+  c.providerUrl = c.data.options.provider_url || "https://github.com/ramon-dejesus/sn-games";
 
+  // Game State
+  let lastStarter = "O"; // Start with O, will alternate
 
-    c.makeMove = function(index) {
-        if (c.board[index] || c.winner) return;
-        c.board[index] = c.currentPlayer;
-        if (checkWinner()) {
-            c.winner = c.currentPlayer;
-        } else if (c.board.every(cell => cell)) {
-            c.isDraw = true;
-        } else {
-            c.currentPlayer = c.currentPlayer === "X" ? "O" : "X";
-        }
-    };
+  function getNextStarter() {
+    lastStarter = lastStarter === "X" ? "O" : "X";
+    return lastStarter;
+  }
 
-    function checkWinner() {
-        const combos = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6]
-        ];
-        return combos.some(([a, b, cIdx]) => {
-            return c.board[a] && c.board[a] === c.board[b] && c.board[a] === c.board[cIdx];
-        });
+  c.board = Array(9).fill("");
+  c.currentPlayer = getNextStarter();
+  c.winner = null;
+  c.isDraw = false;
+  c.cpuThinking = false;
+
+  // Handle Player Move
+  c.makeMove = function(index) {
+    if (c.board[index] || c.winner || (c.mode === "pvc" && c.cpuThinking)) return;
+
+    c.board[index] = c.currentPlayer;
+    if (checkWinner()) {
+      c.winner = c.currentPlayer;
+    } else if (c.board.every(cell => cell)) {
+      c.isDraw = true;
+    } else {
+      c.currentPlayer = c.currentPlayer === "X" ? "O" : "X";
+
+      if (c.mode === "pvc" && c.currentPlayer === "O") {
+        c.cpuThinking = true;
+        setTimeout(function() {
+          c.makeCpuMove();
+        }, 1000);
+      }
+    }
+  };
+
+  // CPU Logic: Win or Block Strategy
+  c.makeCpuMove = function() {
+    if (c.winner || c.isDraw) {
+      c.cpuThinking = false;
+      return;
     }
 
-    c.resetGame = function() {
-        c.board = Array(9).fill("");
-        c.currentPlayer = "X";
-        c.winner = null;
-        c.isDraw = false;
-    };
-};]]></client_script>
+    const emptyIndices = c.board
+      .map((cell, idx) => cell === "" ? idx : null)
+      .filter(i => i !== null);
+
+    if (emptyIndices.length === 0) {
+      c.cpuThinking = false;
+      return;
+    }
+
+    // Try to win first
+    const winningMove = findStrategicMove("O");
+    const blockingMove = winningMove === null ? findStrategicMove("X") : null;
+    const chosenIndex = winningMove !== null ? winningMove : (blockingMove !== null ? blockingMove : emptyIndices[Math.floor(Math.random() * emptyIndices.length)]);
+
+    c.board[chosenIndex] = c.currentPlayer;
+    if (checkWinner()) {
+      c.winner = c.currentPlayer;
+    } else if (c.board.every(cell => cell)) {
+      c.isDraw = true;
+    } else {
+      c.currentPlayer = "X";
+    }
+
+    c.cpuThinking = false;
+    $scope.$applyAsync();
+  };
+
+  // Finds a move to either win (if mark is CPU) or block (if mark is player)
+  function findStrategicMove(mark) {
+    const combos = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+    for (let combo of combos) {
+      const [a, b, cIdx] = combo;
+      const marks = [c.board[a], c.board[b], c.board[cIdx]];
+      const matchCount = marks.filter(m => m === mark).length;
+      const emptySpots = combo.filter(i => c.board[i] === "");
+      if (matchCount === 2 && emptySpots.length === 1) {
+        return emptySpots[0];
+      }
+    }
+    return null;
+  }
+
+  // Check for Winner
+  function checkWinner() {
+    const combos = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+    return combos.some(([a, b, cIdx]) => {
+      return c.board[a] && c.board[a] === c.board[b] && c.board[a] === c.board[cIdx];
+    });
+  }
+
+  // Reset Game
+  c.resetGame = function() {
+    c.board = Array(9).fill("");
+    c.currentPlayer = getNextStarter();
+    c.winner = null;
+    c.isDraw = false;
+    c.cpuThinking = false;
+
+    if (c.mode === "pvc" && c.currentPlayer === "O") {
+      c.cpuThinking = true;
+      setTimeout(function() {
+        c.makeCpuMove();
+      }, 1000);
+    }
+  };
+
+  // Auto-trigger CPU if starting as O
+  if (c.mode === "pvc" && c.currentPlayer === "O") {
+    c.cpuThinking = true;
+    setTimeout(function() {
+      c.makeCpuMove();
+    }, 50);
+  }
+};
+]]></client_script>
         <controller_as>c</controller_as>
         <css>/* Tic Tac Toe Widget Styles */
 
@@ -121,6 +207,17 @@
 
 .sn-games-tictactoe .grid div:hover {
   background-color: var(--cell-hover-bg, #f1f1f1);
+}
+
+/* Visual feedback during CPU turn */
+.sn-games-tictactoe .cursor-not-allowed {
+  cursor: not-allowed !important;
+  opacity: 0.5;
+}
+
+.sn-games-tictactoe .cpu-disabled {
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 .sn-games-tictactoe .text-center {
@@ -206,7 +303,6 @@
 .py-3 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
 .py-4 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
 .py-5 { padding-top: 2rem !important; padding-bottom: 2rem !important; }
-
 </css>
         <data_table>sp_instance</data_table>
         <demo_data>{
@@ -245,16 +341,17 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-02 18:01:25</sys_created_on>
         <sys_id>9962bc2793a02210b17c70a08bba1058</sys_id>
-        <sys_mod_count>112</sys_mod_count>
+        <sys_mod_count>145</sys_mod_count>
         <sys_name>Tic Tac Toe Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_9962bc2793a02210b17c70a08bba1058</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-02 20:38:18</sys_updated_on>
+        <sys_updated_on>2025-04-02 21:23:26</sys_updated_on>
         <template><![CDATA[<!-- Widget Body Template -->
 <div class="sn-games-tictactoe p-4" ng-class="c.backgroundColorClass" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex }">
+
   <div class="text-center mb-4">
     <h2 class="text-xl font-bold">Tic Tac Toe</h2>
   </div>
@@ -268,30 +365,39 @@
                 ng-model="c.mode"
                 ng-change="c.resetGame()">
           <option value="pvp">Player vs Player</option>
-          <option value="pvc">Player vs CPU (Coming Soon)</option>
+          <option value="pvc">Player vs CPU</option>
         </select>
       </div>
     </div>
     <div class="col-xs-3 text-center">
-      <button class="btn btn-default" ng-click="c.resetGame()">Reset</button>
+      <button class="btn" ng-class="{ 'btn-danger': c.winner || c.isDraw}" ng-click="c.resetGame()">Reset</button>
     </div>
     <div class="col-xs-2 text-center">      
-      <p class="text-lg">Winner: <span ng-if="c.winner" class="font-bold">{{c.winner}}</span><span class="font-bold" ng-if="!c.winner && c.isDraw">Draw!</span><span class="font-bold" ng-if="!c.winner && !c.isDraw">?</span></p>
+      <p class="text-lg font-bold">Winner: <span ng-if="c.winner" class="font-bold">{{c.winner}}</span><span class="font-bold" ng-if="!c.winner && c.isDraw">Draw!</span><span class="font-bold" ng-if="!c.winner && !c.isDraw">?</span></p>
     </div>
   </div>
 
+  <div class="text-center pb-2" ng-if="!c.winner && !c.isDraw">
+    <p class="text-lg font-bold">
+      Current Turn:
+      <span class="label label-danger">{{c.currentPlayer}}</span>
+    </p>
+  </div>
 
-  <div class="game-board grid grid-cols-3 gap-2 center-block">
-    <div ng-style="{ 'border-color': c.borderColor }" ng-repeat="cell in c.board track by $index"
-         class="w-16 h-16 border border-gray-500 flex items-center justify-center text-2xl cursor-pointer"
-         ng-click="c.makeMove($index)">
+  <div class="game-board grid grid-cols-3 gap-2 center-block"
+       ng-class="{ 'cpu-disabled': c.cpuThinking }">
+    <div ng-style="{ 'border-color': c.borderColor }"
+         ng-repeat="cell in c.board track by $index"
+         class="w-16 h-16 border border-gray-500 flex items-center justify-center text-2xl"
+         ng-click="!c.cpuThinking && c.makeMove($index)"
+         ng-class="{ 'cursor-pointer': !c.cpuThinking, 'cursor-not-allowed disabled-cell': c.cpuThinking }">
       {{cell}}
     </div>
   </div>
 
   <div class="text-center pt-5 pb-4">
     <a ng-href="{{c.providerUrl}}" target="_blank" ng-style="{'color': c.fontColorHex}" class="text-muted small">
-      Brought to you by <strong>SN GAMES</strong>
+      Brought to you by <strong>DE JESUS SERVICES, INC</strong>
       <img ng-if="c.logoUrl" ng-src="{{c.logoUrl}}" alt="Game Logo" class="img-rounded img-responsive" style="display:inline-block; height: 1.5em; vertical-align: middle; margin-left: 5px;">
     </a>
   </div>
