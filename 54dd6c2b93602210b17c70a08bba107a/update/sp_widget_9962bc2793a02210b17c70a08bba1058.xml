@@ -7,8 +7,9 @@
 
   // Widget Option Bindings
   c.mode = c.data.options.default_game_mode || "pvp";
-  c.backgroundColorClass = c.data.options.background_color_class || "bg-primary";
-  c.fontColorHex = c.data.options.font_color_hex || "#000000";
+  //c.backgroundColorClass = c.data.options.background_color_class || "bg-primary";
+  c.backgroundColorHex = c.data.options.backgroun_color_hex || "#fff";
+	c.fontColorHex = c.data.options.font_color_hex || "#000000";
   c.borderColorHex = c.fontColorHex;
   c.fontFamily = c.data.options.font_family || "Arial, sans-serif";
   c.logoUrl = c.data.options.logo_url || "../sn_games_logo.png";
@@ -325,7 +326,7 @@
   
 }]]></link>
         <name>Tic Tac Toe Game Widget</name>
-        <option_schema>[{"hint":"CSS class for the primary background color.","name":"background_color_class","section":"Presentation","default_value":"bg-primary","label":"Background Color Class","type":"string"},{"hint":"Optional logo image URL displayed in the widget.","name":"logo_url","section":"Presentation","default_value":"","label":"Logo URL","type":"string"},{"hint":"Custom font-family to apply inside the widget.","name":"font_family","section":"Presentation","default_value":"Arial, sans-serif","label":"Font Family","type":"string"},{"hint":"Player vs Player (PVP), Player vs CPU (PVC)","name":"default_game_mode","section":"Behavior","default_value":"pvp","label":"Default Game Mode (Player vs CPU)","type":"choice","choices":[{"label":"pvp,pvc","value":"pvp,pvc"}]},{"hint":"#000, Hexadecimal color value for the font text of game.","name":"font_color_hex","section":"Presentation","default_value":"#000000","label":"Font Color Hex","type":"string"},{"hint":"This was brought to you by SN GAMES! (Modify repo url or your website here.)","name":"provider_url","section":"Documentation","default_value":"https://github.com/ramon-dejesus/sn-games","label":"Provider URL","type":"string"}]</option_schema>
+        <option_schema>[{"hint":"#fff, Hex color background color for the game.","name":"background_color_hex","section":"Presentation","default_value":"#fff","label":"Background Color Hex","type":"string"},{"hint":"Optional logo image URL displayed in the widget.","name":"logo_url","section":"Presentation","default_value":"","label":"Logo URL","type":"string"},{"hint":"Custom font-family to apply inside the widget.","name":"font_family","section":"Presentation","default_value":"Arial, sans-serif","label":"Font Family","type":"string"},{"hint":"Player vs Player (PVP), Player vs CPU (PVC)","name":"default_game_mode","section":"Behavior","default_value":"pvp","label":"Default Game Mode (Player vs CPU)","type":"choice","choices":[{"label":"pvp","value":"pvp"},{"label":"pvc","value":"pvc"}]},{"hint":"#000, Hexadecimal color value for the font text of game.","name":"font_color_hex","section":"Presentation","default_value":"#000000","label":"Font Color Hex","type":"string"},{"hint":"This was brought to you by SN GAMES! (Modify repo url or your website here.)","name":"provider_url","section":"Documentation","default_value":"https://github.com/ramon-dejesus/sn-games","label":"Provider URL","type":"string"}]</option_schema>
         <public>false</public>
         <roles/>
         <script><![CDATA[(function() {
@@ -341,16 +342,16 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-02 18:01:25</sys_created_on>
         <sys_id>9962bc2793a02210b17c70a08bba1058</sys_id>
-        <sys_mod_count>145</sys_mod_count>
+        <sys_mod_count>149</sys_mod_count>
         <sys_name>Tic Tac Toe Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_9962bc2793a02210b17c70a08bba1058</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-02 21:23:26</sys_updated_on>
+        <sys_updated_on>2025-04-02 21:48:30</sys_updated_on>
         <template><![CDATA[<!-- Widget Body Template -->
-<div class="sn-games-tictactoe p-4" ng-class="c.backgroundColorClass" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex }">
+<div class="sn-games-tictactoe p-4" ng-style="c.backgroundColorClass" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
 
   <div class="text-center mb-4">
     <h2 class="text-xl font-bold">Tic Tac Toe</h2>
@@ -397,7 +398,7 @@
 
   <div class="text-center pt-5 pb-4">
     <a ng-href="{{c.providerUrl}}" target="_blank" ng-style="{'color': c.fontColorHex}" class="text-muted small">
-      Brought to you by <strong>DE JESUS SERVICES, INC</strong>
+      Brought to you by <strong>ramon@dejesus.services</strong>
       <img ng-if="c.logoUrl" ng-src="{{c.logoUrl}}" alt="Game Logo" class="img-rounded img-responsive" style="display:inline-block; height: 1.5em; vertical-align: middle; margin-left: 5px;">
     </a>
   </div>
