@@ -342,16 +342,34 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-02 18:01:25</sys_created_on>
         <sys_id>9962bc2793a02210b17c70a08bba1058</sys_id>
-        <sys_mod_count>149</sys_mod_count>
+        <sys_mod_count>150</sys_mod_count>
         <sys_name>Tic Tac Toe Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_9962bc2793a02210b17c70a08bba1058</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-02 21:48:30</sys_updated_on>
+        <sys_updated_on>2025-04-02 21:52:03</sys_updated_on>
         <template><![CDATA[<!-- Widget Body Template -->
 <div class="sn-games-tictactoe p-4" ng-style="c.backgroundColorClass" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
+
+  <style>
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    [tabindex]:focus {
+      outline: 3px solid #007bff;
+    }
+  </style>
 
   <div class="text-center mb-4">
     <h2 class="text-xl font-bold">Tic Tac Toe</h2>
@@ -379,7 +397,7 @@
   </div>
 
   <div class="text-center pb-2" ng-if="!c.winner && !c.isDraw">
-    <p class="text-lg font-bold">
+    <p class="text-lg font-bold" aria-live="polite">
       Current Turn:
       <span class="label label-danger">{{c.currentPlayer}}</span>
     </p>
@@ -389,6 +407,10 @@
        ng-class="{ 'cpu-disabled': c.cpuThinking }">
     <div ng-style="{ 'border-color': c.borderColor }"
          ng-repeat="cell in c.board track by $index"
+         role="button"
+         tabindex="0"
+         aria-label="Cell {{$index + 1}}, currently {{cell || 'empty'}}"
+         ng-keypress="!c.cpuThinking && ($event.keyCode === 13 || $event.keyCode === 32) && c.makeMove($index)"
          class="w-16 h-16 border border-gray-500 flex items-center justify-center text-2xl"
          ng-click="!c.cpuThinking && c.makeMove($index)"
          ng-class="{ 'cursor-pointer': !c.cpuThinking, 'cursor-not-allowed disabled-cell': c.cpuThinking }">
