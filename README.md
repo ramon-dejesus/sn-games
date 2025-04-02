@@ -14,6 +14,10 @@ Contact: [ramon@dejesus.services](mailto:ramon@dejesus.services)
 
 ## 📦 Release 1: Tic Tac Toe Widget
 
+<p align="center">
+  <img src="./TicTacToeGame.png" alt="Tic Tac Toe Game Screenshot" width="480">
+</p>
+
 This initial release features a fully functional **Tic Tac Toe** game:
 
 - 👯 PvP (Player vs Player) Mode
