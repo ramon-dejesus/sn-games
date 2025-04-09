@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($scope) {
+  var c = this;
+
+  // Widget Option Bindings
+  c.mode = c.data.options.default_game_mode || "pvp";
+  c.backgroundColorHex = c.data.options.backgroun_color_hex || "#fff";
+  c.fontColorHex = c.data.options.font_color_hex || "#000000";
+  c.borderColorHex = c.fontColorHex;
+  c.fontFamily = c.data.options.font_family || "Arial, sans-serif";
+  c.logoUrl = c.data.options.logo_url || "../sn_games_logo.png";
+  c.providerUrl = c.data.options.provider_url || "https://github.com/ramon-dejesus/sn-games";
+
+  const ROWS = 6;
+  const COLS = 7;
+
+  // Game State
+  c.board = [];
+  c.currentPlayer = 'R';
+  c.winner = null;
+  c.isDraw = false;
+
+  // Initialize Board
+  c.resetGame = function() {
+    c.board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+    c.currentPlayer = 'R';
+    c.winner = null;
+    c.isDraw = false;
+  };
+
+  // Drop disc into the selected column
+  c.dropDisc = function(col) {
+    if (c.winner || c.isDraw) return;
+
+    for (let row = ROWS - 1; row >= 0; row--) {
+      if (!c.board[row][col]) {
+        c.board[row][col] = c.currentPlayer;
+        c.currentPlayer = c.currentPlayer === 'R' ? 'B' : 'R';
+        return;
+      }
+    }
+
+    // Optionally: Add feedback if column is full
+  };
+
+  // On load
+  c.resetGame();
+};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* Connect Four Widget Styles – Story 6 */&#13;
+&#13;
+.sn-games-connectfour {&#13;
+  font-family: var(--font-family, sans-serif);&#13;
+}&#13;
+&#13;
+.sn-games-connectfour .game-board-options {&#13;
+  width: 100%;&#13;
+  max-width: 30em;&#13;
+  margin: 0 auto;&#13;
+}&#13;
+&#13;
+.sn-games-connectfour .game-board {&#13;
+  width: 100%;&#13;
+  max-width: 30em;&#13;
+  margin: 1rem auto;&#13;
+}&#13;
+&#13;
+.sn-games-connectfour .cf-row {&#13;
+  display: flex;&#13;
+  justify-content: center;&#13;
+  gap: 0.5rem;&#13;
+  margin-top: 0.25rem;&#13;
+}&#13;
+&#13;
+.sn-games-connectfour .cf-cell {&#13;
+  width: 60px;&#13;
+  height: 60px;&#13;
+  background-color: #e0e0e0;&#13;
+  border: 2px solid #444;&#13;
+  border-radius: 50%;&#13;
+  display: flex;&#13;
+  align-items: center;&#13;
+  justify-content: center;&#13;
+  font-weight: bold;&#13;
+  font-size: 0.85rem;&#13;
+  text-align: center;&#13;
+  transition: background-color 0.2s ease-in-out;&#13;
+}&#13;
+&#13;
+.sn-games-connectfour .cf-red {&#13;
+  background-color: red;&#13;
+  color: white;&#13;
+}&#13;
+&#13;
+.sn-games-connectfour .cf-black {&#13;
+  background-color: black;&#13;
+  color: white;&#13;
+}&#13;
+&#13;
+.sn-games-connectfour .cf-disc {&#13;
+  user-select: none;&#13;
+  pointer-events: none;&#13;
+}&#13;
+&#13;
+/* Column drop zones (clickable) */&#13;
+.sn-games-connectfour .game-board .cf-cell[role="button"] {&#13;
+  background-color: #f0f0f0;&#13;
+  border: 2px dashed #aaa;&#13;
+  color: #555;&#13;
+  cursor: pointer;&#13;
+}&#13;
+&#13;
+.sn-games-connectfour .game-board .cf-cell[role="button"]:hover {&#13;
+  background-color: #ccc;&#13;
+  border-color: #888;&#13;
+}&#13;
+&#13;
+/* Utility Helpers */&#13;
+.sn-games-connectfour .text-center {&#13;
+  text-align: center;&#13;
+}&#13;
+&#13;
+.sn-games-connectfour .text-lg {&#13;
+  font-size: 1.25rem;&#13;
+}&#13;
+&#13;
+.sn-games-connectfour .font-bold {&#13;
+  font-weight: bold;&#13;
+}&#13;
+&#13;
+.sn-games-connectfour .center-cols {&#13;
+  display: flex;&#13;
+  align-items: center;&#13;
+  justify-content: center;&#13;
+}&#13;
+&#13;
+&#13;
+/* Padding Helpers - Bootstrap 3-style utility classes */&#13;
+&#13;
+/* All sides */&#13;
+.p-0 { padding: 0 !important; }&#13;
+.p-1 { padding: 0.25rem !important; }&#13;
+.p-2 { padding: 0.5rem !important; }&#13;
+.p-3 { padding: 1rem !important; }&#13;
+.p-4 { padding: 1.5rem !important; }&#13;
+.p-5 { padding: 2rem !important; }&#13;
+&#13;
+/* Padding Top */&#13;
+.pt-0 { padding-top: 0 !important; }&#13;
+.pt-1 { padding-top: 0.25rem !important; }&#13;
+.pt-2 { padding-top: 0.5rem !important; }&#13;
+.pt-3 { padding-top: 1rem !important; }&#13;
+.pt-4 { padding-top: 1.5rem !important; }&#13;
+.pt-5 { padding-top: 2rem !important; }&#13;
+&#13;
+/* Padding Bottom */&#13;
+.pb-0 { padding-bottom: 0 !important; }&#13;
+.pb-1 { padding-bottom: 0.25rem !important; }&#13;
+.pb-2 { padding-bottom: 0.5rem !important; }&#13;
+.pb-3 { padding-bottom: 1rem !important; }&#13;
+.pb-4 { padding-bottom: 1.5rem !important; }&#13;
+.pb-5 { padding-bottom: 2rem !important; }&#13;
+&#13;
+/* Padding Left */&#13;
+.pl-0 { padding-left: 0 !important; }&#13;
+.pl-1 { padding-left: 0.25rem !important; }&#13;
+.pl-2 { padding-left: 0.5rem !important; }&#13;
+.pl-3 { padding-left: 1rem !important; }&#13;
+.pl-4 { padding-left: 1.5rem !important; }&#13;
+.pl-5 { padding-left: 2rem !important; }&#13;
+&#13;
+/* Padding Right */&#13;
+.pr-0 { padding-right: 0 !important; }&#13;
+.pr-1 { padding-right: 0.25rem !important; }&#13;
+.pr-2 { padding-right: 0.5rem !important; }&#13;
+.pr-3 { padding-right: 1rem !important; }&#13;
+.pr-4 { padding-right: 1.5rem !important; }&#13;
+.pr-5 { padding-right: 2rem !important; }&#13;
+&#13;
+/* Padding X (Left &amp; Right) */&#13;
+.px-0 { padding-left: 0 !important; padding-right: 0 !important; }&#13;
+.px-1 { padding-left: 0.25rem !important; padding-right: 0.25rem !important; }&#13;
+.px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }&#13;
+.px-3 { padding-left: 1rem !important; padding-right: 1rem !important; }&#13;
+.px-4 { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }&#13;
+.px-5 { padding-left: 2rem !important; padding-right: 2rem !important; }&#13;
+&#13;
+/* Padding Y (Top &amp; Bottom) */&#13;
+.py-0 { padding-top: 0 !important; padding-bottom: 0 !important; }&#13;
+.py-1 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }&#13;
+.py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }&#13;
+.py-3 { padding-top: 1rem !important; padding-bottom: 1rem !important; }&#13;
+.py-4 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }&#13;
+.py-5 { padding-top: 2rem !important; padding-bottom: 2rem !important; }&#13;
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data>{&#13;
+  "options": {&#13;
+    "background_color_hex": "#ffffff",&#13;
+    "logo_url": "../sn_games_logo.png",&#13;
+    "font_family": "Arial, sans-serif",&#13;
+    "default_game_mode": "pvp",&#13;
+    "font_color_hex": "#000000",&#13;
+    "provider_url": "https://github.com/ramon-dejesus/sn-games"&#13;
+  }&#13;
+}</demo_data>
+        <description>Connect Four is a two-player competitive game widget designed for the ServiceNow Service Portal as part of the sn-games suite. This widget replicates the classic vertical strategy game where players take turns dropping colored discs into a 7-column, 6-row grid. The first player to align four discs horizontally, vertically, or diagonally wins.</description>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>sn_games_connectfour_widget</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+  
+}]]></link>
+        <name>Connect Four Game Widget</name>
+        <option_schema>[&#13;
+  {&#13;
+    "hint": "#fff, Hex color background color for the game.",&#13;
+    "name": "background_color_hex",&#13;
+    "section": "Presentation",&#13;
+    "default_value": "#fff",&#13;
+    "label": "Background Color Hex",&#13;
+    "type": "string"&#13;
+  },&#13;
+  {&#13;
+    "hint": "Optional logo image URL displayed in the widget.",&#13;
+    "name": "logo_url",&#13;
+    "section": "Presentation",&#13;
+    "default_value": "",&#13;
+    "label": "Logo URL",&#13;
+    "type": "string"&#13;
+  },&#13;
+  {&#13;
+    "hint": "Custom font-family to apply inside the widget.",&#13;
+    "name": "font_family",&#13;
+    "section": "Presentation",&#13;
+    "default_value": "Arial, sans-serif",&#13;
+    "label": "Font Family",&#13;
+    "type": "string"&#13;
+  },&#13;
+  {&#13;
+    "hint": "Player vs Player (PVP), Player vs CPU (PVC)",&#13;
+    "name": "default_game_mode",&#13;
+    "section": "Behavior",&#13;
+    "default_value": "pvp",&#13;
+    "label": "Default Game Mode (Player vs CPU)",&#13;
+    "type": "choice",&#13;
+    "choices": [&#13;
+      { "label": "pvp", "value": "pvp" },&#13;
+      { "label": "pvc", "value": "pvc" }&#13;
+    ]&#13;
+  },&#13;
+  {&#13;
+    "hint": "#000, Hexadecimal color value for the font text of game.",&#13;
+    "name": "font_color_hex",&#13;
+    "section": "Presentation",&#13;
+    "default_value": "#000000",&#13;
+    "label": "Font Color Hex",&#13;
+    "type": "string"&#13;
+  },&#13;
+  {&#13;
+    "hint": "This was brought to you by DE JESUS SERVICES, INC. (Modify repo url or your website here.)",&#13;
+    "name": "provider_url",&#13;
+    "section": "Documentation",&#13;
+    "default_value": "https://github.com/ramon-dejesus/sn-games",&#13;
+    "label": "Provider URL",&#13;
+    "type": "string"&#13;
+  }&#13;
+]&#13;
+</option_schema>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    /* populate the 'data' object */
+    /* e.g., data.table = $sp.getValue('table'); */
+
+    // Initialize default widget options if needed
+    data.options = options;
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-04-09 00:49:39</sys_created_on>
+        <sys_id>98a94de993b0a210b17c70a08bba1064</sys_id>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>Connect Four Game Widget</sys_name>
+        <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
+        <sys_update_name>sp_widget_98a94de993b0a210b17c70a08bba1064</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-04-09 01:18:16</sys_updated_on>
+        <template><![CDATA[<!-- Connect Four Widget HTML Template -->
+<div class="sn-games-connectfour p-4" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
+
+  <style>
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    [tabindex]:focus {
+      outline: 3px solid #007bff;
+    }
+  </style>
+
+  <div class="text-center mb-4">
+    <h2 class="text-xl font-bold">Connect Four</h2>
+  </div>
+
+  <div class="game-board-options row pr-2 pl-2 pb-2 center-cols">
+    <div class="col-xs-7 text-left" style="display: contents;">
+      <div class="game-mode-inline">
+        <label for="mode">Game Mode:</label>
+        <select id="mode"
+                class="form-control input-sm"
+                ng-model="c.mode"
+                ng-change="c.resetGame()">
+          <option value="pvp">Player vs Player</option>
+          <option value="pvc">Player vs CPU</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <button class="btn" ng-class="{ 'btn-danger': c.winner || c.isDraw}" ng-click="c.resetGame()">Reset</button>
+    </div>
+    <div class="col-xs-2 text-center">
+      <p class="text-lg font-bold">Winner:
+        <span ng-if="c.winner" class="font-bold">{{c.winner}}</span>
+        <span class="font-bold" ng-if="!c.winner && c.isDraw">Draw!</span>
+        <span class="font-bold" ng-if="!c.winner && !c.isDraw">?</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="text-center pb-2" ng-if="!c.winner && !c.isDraw">
+    <p class="text-lg font-bold" aria-live="polite">
+      Current Turn:
+      <span class="label label-danger">{{c.currentPlayer}}</span>
+    </p>
+  </div>
+
+  <div class="game-board grid grid-cols-7 gap-2 center-block"
+       ng-class="{ 'cpu-disabled': c.cpuThinking }"
+       aria-label="Connect Four Board"
+       role="grid">
+
+    <!-- Column drop buttons -->
+    <div class="cf-cell w-16 h-16 border border-gray-500 flex items-center justify-center text-md font-bold rounded-full text-white text-center"
+         ng-repeat="col in [].constructor(7) track by $index"
+         ng-click="!c.cpuThinking && c.dropDisc($index)"
+         tabindex="0"
+         role="button"
+         aria-label="Drop disc in column {{$index + 1}}"
+         ng-keypress="!c.cpuThinking && ($event.keyCode === 13 || $event.keyCode === 32) && c.dropDisc($index)">
+      ↓
+    </div>
+
+    <!-- Game board rows -->
+    <div class="cf-row w-full"
+         ng-repeat="row in c.board track by $rowIndex"
+         role="row"
+         class="flex justify-center gap-2 mt-1">
+      <div class="cf-cell w-16 h-16 border border-gray-500 flex items-center justify-center rounded-full text-sm"
+           ng-repeat="cell in row track by $colIndex"
+           ng-class="{ 'cf-red': cell === 'R', 'cf-black': cell === 'B' }"
+           role="gridcell"
+           aria-label="{{ cell === 'R' ? 'Red Disc' : (cell === 'B' ? 'Black Disc' : 'Empty Cell') }}">
+        <span class="cf-disc" ng-if="cell">
+          {{ cell === 'R' ? 'Red' : 'Black' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center pt-5 pb-4">
+    <a ng-href="{{c.providerUrl}}" target="_blank" ng-style="{'color': c.fontColorHex}" class="text-muted small">
+      Brought to you by <strong>DE JESUS SERVICES, INC.</strong>
+      <img ng-if="c.logoUrl" ng-src="{{c.logoUrl}}" alt="Game Logo" class="img-rounded img-responsive" style="display:inline-block; height: 1.5em; vertical-align: middle; margin-left: 5px;">
+    </a>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>
