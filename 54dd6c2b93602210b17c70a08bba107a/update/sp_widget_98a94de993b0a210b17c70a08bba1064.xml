@@ -37,9 +37,9 @@
     if (c.winner || c.isDraw) return;
 
     for (let row = ROWS - 1; row >= 0; row--) {
+			
       if (!c.board[row][col]) {
-        c.board[row][col] = c.currentPlayer;
-        console.log("Placing disc in col:", col, "row:", row, "player:", c.currentPlayer);
+        c.board[row][col] = c.currentPlayer;        
         c.currentPlayer = c.currentPlayer === 'R' ? 'B' : 'R';
         $scope.$applyAsync();
         return;
@@ -291,14 +291,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-09 00:49:39</sys_created_on>
         <sys_id>98a94de993b0a210b17c70a08bba1064</sys_id>
-        <sys_mod_count>14</sys_mod_count>
+        <sys_mod_count>29</sys_mod_count>
         <sys_name>Connect Four Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_98a94de993b0a210b17c70a08bba1064</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-09 01:46:59</sys_updated_on>
+        <sys_updated_on>2025-04-09 02:05:04</sys_updated_on>
         <template><![CDATA[<!-- Connect Four Widget HTML Template -->
 <div class="sn-games-connectfour p-4" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
 
@@ -384,7 +384,7 @@
 
       <!-- Stack each row from top to bottom (bottom row is index 5) -->
       <div class="cf-cell w-16 h-16 border border-gray-500 flex items-center justify-center rounded-full text-sm"
-           ng-repeat="rowIndex in [5,4,3,2,1,0] track by rowIndex"
+           ng-repeat="rowIndex in [0,1,2,3,4,5] track by rowIndex"
            ng-class="{ 'cf-red': c.board[rowIndex][colIndex] === 'R', 'cf-black': c.board[rowIndex][colIndex] === 'B' }"
            role="gridcell"
            aria-label="{{ c.board[rowIndex][colIndex] === 'R' ? 'Red Disc' : (c.board[rowIndex][colIndex] === 'B' ? 'Black Disc' : 'Empty Cell') }}">
