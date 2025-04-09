@@ -54,151 +54,158 @@
 };
 ]]></client_script>
         <controller_as>c</controller_as>
-        <css>/* Connect Four Widget Styles – Story 6 */&#13;
-&#13;
-.sn-games-connectfour {&#13;
-  font-family: var(--font-family, sans-serif);&#13;
-}&#13;
-&#13;
-.sn-games-connectfour .game-board-options {&#13;
-  width: 100%;&#13;
-  max-width: 30em;&#13;
-  margin: 0 auto;&#13;
-}&#13;
-&#13;
-.sn-games-connectfour .game-board {&#13;
-  width: 100%;&#13;
-  max-width: 30em;&#13;
-  margin: 1rem auto;&#13;
-}&#13;
-&#13;
-.sn-games-connectfour .cf-row {&#13;
-  display: flex;&#13;
-  justify-content: center;&#13;
-  gap: 0.5rem;&#13;
-  margin-top: 0.25rem;&#13;
-}&#13;
-&#13;
-.sn-games-connectfour .cf-cell {&#13;
-  width: 60px;&#13;
-  height: 60px;&#13;
-  background-color: #e0e0e0;&#13;
-  border: 2px solid #444;&#13;
-  border-radius: 50%;&#13;
-  display: flex;&#13;
-  align-items: center;&#13;
-  justify-content: center;&#13;
-  font-weight: bold;&#13;
-  font-size: 0.85rem;&#13;
-  text-align: center;&#13;
-  transition: background-color 0.2s ease-in-out;&#13;
-}&#13;
-&#13;
-.sn-games-connectfour .cf-red {&#13;
-  background-color: red;&#13;
-  color: white;&#13;
-}&#13;
-&#13;
-.sn-games-connectfour .cf-black {&#13;
-  background-color: black;&#13;
-  color: white;&#13;
-}&#13;
-&#13;
-.sn-games-connectfour .cf-disc {&#13;
-  user-select: none;&#13;
-  pointer-events: none;&#13;
-}&#13;
-&#13;
-/* Column drop zones (clickable) */&#13;
-.sn-games-connectfour .game-board .cf-cell[role="button"] {&#13;
-  background-color: #f0f0f0;&#13;
-  border: 2px dashed #aaa;&#13;
-  color: #555;&#13;
-  cursor: pointer;&#13;
-}&#13;
-&#13;
-.sn-games-connectfour .game-board .cf-cell[role="button"]:hover {&#13;
-  background-color: #ccc;&#13;
-  border-color: #888;&#13;
-}&#13;
-&#13;
-/* Utility Helpers */&#13;
-.sn-games-connectfour .text-center {&#13;
-  text-align: center;&#13;
-}&#13;
-&#13;
-.sn-games-connectfour .text-lg {&#13;
-  font-size: 1.25rem;&#13;
-}&#13;
-&#13;
-.sn-games-connectfour .font-bold {&#13;
-  font-weight: bold;&#13;
-}&#13;
-&#13;
-.sn-games-connectfour .center-cols {&#13;
-  display: flex;&#13;
-  align-items: center;&#13;
-  justify-content: center;&#13;
-}&#13;
-&#13;
-&#13;
-/* Padding Helpers - Bootstrap 3-style utility classes */&#13;
-&#13;
-/* All sides */&#13;
-.p-0 { padding: 0 !important; }&#13;
-.p-1 { padding: 0.25rem !important; }&#13;
-.p-2 { padding: 0.5rem !important; }&#13;
-.p-3 { padding: 1rem !important; }&#13;
-.p-4 { padding: 1.5rem !important; }&#13;
-.p-5 { padding: 2rem !important; }&#13;
-&#13;
-/* Padding Top */&#13;
-.pt-0 { padding-top: 0 !important; }&#13;
-.pt-1 { padding-top: 0.25rem !important; }&#13;
-.pt-2 { padding-top: 0.5rem !important; }&#13;
-.pt-3 { padding-top: 1rem !important; }&#13;
-.pt-4 { padding-top: 1.5rem !important; }&#13;
-.pt-5 { padding-top: 2rem !important; }&#13;
-&#13;
-/* Padding Bottom */&#13;
-.pb-0 { padding-bottom: 0 !important; }&#13;
-.pb-1 { padding-bottom: 0.25rem !important; }&#13;
-.pb-2 { padding-bottom: 0.5rem !important; }&#13;
-.pb-3 { padding-bottom: 1rem !important; }&#13;
-.pb-4 { padding-bottom: 1.5rem !important; }&#13;
-.pb-5 { padding-bottom: 2rem !important; }&#13;
-&#13;
-/* Padding Left */&#13;
-.pl-0 { padding-left: 0 !important; }&#13;
-.pl-1 { padding-left: 0.25rem !important; }&#13;
-.pl-2 { padding-left: 0.5rem !important; }&#13;
-.pl-3 { padding-left: 1rem !important; }&#13;
-.pl-4 { padding-left: 1.5rem !important; }&#13;
-.pl-5 { padding-left: 2rem !important; }&#13;
-&#13;
-/* Padding Right */&#13;
-.pr-0 { padding-right: 0 !important; }&#13;
-.pr-1 { padding-right: 0.25rem !important; }&#13;
-.pr-2 { padding-right: 0.5rem !important; }&#13;
-.pr-3 { padding-right: 1rem !important; }&#13;
-.pr-4 { padding-right: 1.5rem !important; }&#13;
-.pr-5 { padding-right: 2rem !important; }&#13;
-&#13;
-/* Padding X (Left &amp; Right) */&#13;
-.px-0 { padding-left: 0 !important; padding-right: 0 !important; }&#13;
-.px-1 { padding-left: 0.25rem !important; padding-right: 0.25rem !important; }&#13;
-.px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }&#13;
-.px-3 { padding-left: 1rem !important; padding-right: 1rem !important; }&#13;
-.px-4 { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }&#13;
-.px-5 { padding-left: 2rem !important; padding-right: 2rem !important; }&#13;
-&#13;
-/* Padding Y (Top &amp; Bottom) */&#13;
-.py-0 { padding-top: 0 !important; padding-bottom: 0 !important; }&#13;
-.py-1 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }&#13;
-.py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }&#13;
-.py-3 { padding-top: 1rem !important; padding-bottom: 1rem !important; }&#13;
-.py-4 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }&#13;
-.py-5 { padding-top: 2rem !important; padding-bottom: 2rem !important; }&#13;
+        <css>/* Connect Four Widget Styles – Story 6 */
+
+.sn-games-connectfour {
+  font-family: var(--font-family, sans-serif);
+}
+
+.sn-games-connectfour .game-board-options {
+  width: 100%;
+  max-width: 30em;
+  margin: 0 auto;
+}
+
+.sn-games-connectfour .game-board {
+  width: 100%;
+  max-width: 30em;
+  margin: 1rem auto;
+}
+
+.sn-games-connectfour .cf-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.sn-games-connectfour .cf-cell {
+  width: 60px;
+  height: 60px;
+  background-color: #e0e0e0;
+  border: 2px solid #444;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.sn-games-connectfour .cf-red {
+  background-color: red;
+  color: white;
+}
+
+.sn-games-connectfour .cf-black {
+  background-color: black;
+  color: white;
+}
+
+.sn-games-connectfour .cf-disc {
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Column drop zones (clickable) */
+.sn-games-connectfour .game-board .cf-cell[role="button"] {
+  background-color: #f0f0f0;
+  border: 2px dashed #aaa;
+  color: #555;
+  cursor: pointer;
+}
+
+.sn-games-connectfour .game-board .cf-cell[role="button"]:hover {
+  background-color: #ccc;
+  border-color: #888;
+}
+
+/* Utility Helpers */
+.sn-games-connectfour .text-center {
+  text-align: center;
+}
+
+.sn-games-connectfour .text-lg {
+  font-size: 1.25rem;
+}
+
+.sn-games-connectfour .font-bold {
+  font-weight: bold;
+}
+
+.sn-games-connectfour .center-cols {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cf-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+
+/* Padding Helpers - Bootstrap 3-style utility classes */
+
+/* All sides */
+.p-0 { padding: 0 !important; }
+.p-1 { padding: 0.25rem !important; }
+.p-2 { padding: 0.5rem !important; }
+.p-3 { padding: 1rem !important; }
+.p-4 { padding: 1.5rem !important; }
+.p-5 { padding: 2rem !important; }
+
+/* Padding Top */
+.pt-0 { padding-top: 0 !important; }
+.pt-1 { padding-top: 0.25rem !important; }
+.pt-2 { padding-top: 0.5rem !important; }
+.pt-3 { padding-top: 1rem !important; }
+.pt-4 { padding-top: 1.5rem !important; }
+.pt-5 { padding-top: 2rem !important; }
+
+/* Padding Bottom */
+.pb-0 { padding-bottom: 0 !important; }
+.pb-1 { padding-bottom: 0.25rem !important; }
+.pb-2 { padding-bottom: 0.5rem !important; }
+.pb-3 { padding-bottom: 1rem !important; }
+.pb-4 { padding-bottom: 1.5rem !important; }
+.pb-5 { padding-bottom: 2rem !important; }
+
+/* Padding Left */
+.pl-0 { padding-left: 0 !important; }
+.pl-1 { padding-left: 0.25rem !important; }
+.pl-2 { padding-left: 0.5rem !important; }
+.pl-3 { padding-left: 1rem !important; }
+.pl-4 { padding-left: 1.5rem !important; }
+.pl-5 { padding-left: 2rem !important; }
+
+/* Padding Right */
+.pr-0 { padding-right: 0 !important; }
+.pr-1 { padding-right: 0.25rem !important; }
+.pr-2 { padding-right: 0.5rem !important; }
+.pr-3 { padding-right: 1rem !important; }
+.pr-4 { padding-right: 1.5rem !important; }
+.pr-5 { padding-right: 2rem !important; }
+
+/* Padding X (Left &amp; Right) */
+.px-0 { padding-left: 0 !important; padding-right: 0 !important; }
+.px-1 { padding-left: 0.25rem !important; padding-right: 0.25rem !important; }
+.px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+.px-3 { padding-left: 1rem !important; padding-right: 1rem !important; }
+.px-4 { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
+.px-5 { padding-left: 2rem !important; padding-right: 2rem !important; }
+
+/* Padding Y (Top &amp; Bottom) */
+.py-0 { padding-top: 0 !important; padding-bottom: 0 !important; }
+.py-1 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+.py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+.py-3 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+.py-4 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+.py-5 { padding-top: 2rem !important; padding-bottom: 2rem !important; }
 </css>
         <data_table>sp_instance</data_table>
         <demo_data>{&#13;
@@ -291,14 +298,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-09 00:49:39</sys_created_on>
         <sys_id>98a94de993b0a210b17c70a08bba1064</sys_id>
-        <sys_mod_count>29</sys_mod_count>
+        <sys_mod_count>31</sys_mod_count>
         <sys_name>Connect Four Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_98a94de993b0a210b17c70a08bba1064</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-09 02:05:04</sys_updated_on>
+        <sys_updated_on>2025-04-09 23:21:25</sys_updated_on>
         <template><![CDATA[<!-- Connect Four Widget HTML Template -->
 <div class="sn-games-connectfour p-4" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
 
@@ -318,13 +325,7 @@
     [tabindex]:focus {
       outline: 3px solid #007bff;
     }
-
-    .cf-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 0.5rem;
-      justify-content: center;
-    }
+    
   </style>
 
   <div class="text-center mb-4">
@@ -359,7 +360,7 @@
   <div class="text-center pb-2" ng-if="!c.winner && !c.isDraw">
     <p class="text-lg font-bold" aria-live="polite">
       Current Turn:
-      <span class="label label-danger">{{c.currentPlayer}}</span>
+      <span ng-class="{ 'cf-red': c.currentPlayer === 'R', 'cf-black': c.currentPlayer === 'B' }" class="label">{{c.currentPlayer}}</span>
     </p>
   </div>
 
