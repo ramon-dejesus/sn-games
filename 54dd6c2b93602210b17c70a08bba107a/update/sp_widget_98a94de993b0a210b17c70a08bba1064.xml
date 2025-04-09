@@ -21,6 +21,7 @@
   c.currentPlayer = 'R';
   c.winner = null;
   c.isDraw = false;
+	c.cpuThinking = false;
 
   // Initialize Board
   c.resetGame = function() {
@@ -28,6 +29,7 @@
     c.currentPlayer = 'R';
     c.winner = null;
     c.isDraw = false;
+		c.cpuThinking = false;
   };
 
   // Drop disc into the selected column
@@ -37,17 +39,20 @@
     for (let row = ROWS - 1; row >= 0; row--) {
       if (!c.board[row][col]) {
         c.board[row][col] = c.currentPlayer;
+        console.log("Placing disc in col:", col, "row:", row, "player:", c.currentPlayer);
         c.currentPlayer = c.currentPlayer === 'R' ? 'B' : 'R';
+        $scope.$applyAsync();
         return;
       }
     }
 
-    // Optionally: Add feedback if column is full
+    console.log("Column full:", col);
   };
 
   // On load
   c.resetGame();
-};]]></client_script>
+};
+]]></client_script>
         <controller_as>c</controller_as>
         <css>/* Connect Four Widget Styles – Story 6 */&#13;
 &#13;
@@ -286,14 +291,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-09 00:49:39</sys_created_on>
         <sys_id>98a94de993b0a210b17c70a08bba1064</sys_id>
-        <sys_mod_count>7</sys_mod_count>
+        <sys_mod_count>14</sys_mod_count>
         <sys_name>Connect Four Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_98a94de993b0a210b17c70a08bba1064</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-09 01:18:16</sys_updated_on>
+        <sys_updated_on>2025-04-09 01:46:59</sys_updated_on>
         <template><![CDATA[<!-- Connect Four Widget HTML Template -->
 <div class="sn-games-connectfour p-4" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
 
@@ -312,6 +317,13 @@
 
     [tabindex]:focus {
       outline: 3px solid #007bff;
+    }
+
+    .cf-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+      justify-content: center;
     }
   </style>
 
@@ -351,36 +363,36 @@
     </p>
   </div>
 
-  <div class="game-board grid grid-cols-7 gap-2 center-block"
+  <!-- CORRECTED GRID DISPLAY: Use true CSS grid for 7 columns -->
+  <div class="game-board cf-grid center-block"
        ng-class="{ 'cpu-disabled': c.cpuThinking }"
        aria-label="Connect Four Board"
        role="grid">
 
-    <!-- Column drop buttons -->
-    <div class="cf-cell w-16 h-16 border border-gray-500 flex items-center justify-center text-md font-bold rounded-full text-white text-center"
-         ng-repeat="col in [].constructor(7) track by $index"
-         ng-click="!c.cpuThinking && c.dropDisc($index)"
-         tabindex="0"
-         role="button"
-         aria-label="Drop disc in column {{$index + 1}}"
-         ng-keypress="!c.cpuThinking && ($event.keyCode === 13 || $event.keyCode === 32) && c.dropDisc($index)">
-      ↓
-    </div>
+    <!-- Render columns horizontally using CSS grid -->
+    <div class="flex flex-col items-center" ng-repeat="colIndex in [0,1,2,3,4,5,6] track by colIndex">
 
-    <!-- Game board rows -->
-    <div class="cf-row w-full"
-         ng-repeat="row in c.board track by $rowIndex"
-         role="row"
-         class="flex justify-center gap-2 mt-1">
+      <!-- Column drop button -->
+      <div class="cf-cell w-16 h-16 border border-gray-500 flex items-center justify-center text-md font-bold rounded-full text-white text-center"
+           ng-click="!c.cpuThinking && c.dropDisc(colIndex)"
+           tabindex="0"
+           role="button"
+           aria-label="Drop disc in column {{$index + 1}}"
+           ng-keypress="!c.cpuThinking && ($event.keyCode === 13 || $event.keyCode === 32) && c.dropDisc(colIndex)">
+        ↓
+      </div>
+
+      <!-- Stack each row from top to bottom (bottom row is index 5) -->
       <div class="cf-cell w-16 h-16 border border-gray-500 flex items-center justify-center rounded-full text-sm"
-           ng-repeat="cell in row track by $colIndex"
-           ng-class="{ 'cf-red': cell === 'R', 'cf-black': cell === 'B' }"
+           ng-repeat="rowIndex in [5,4,3,2,1,0] track by rowIndex"
+           ng-class="{ 'cf-red': c.board[rowIndex][colIndex] === 'R', 'cf-black': c.board[rowIndex][colIndex] === 'B' }"
            role="gridcell"
-           aria-label="{{ cell === 'R' ? 'Red Disc' : (cell === 'B' ? 'Black Disc' : 'Empty Cell') }}">
-        <span class="cf-disc" ng-if="cell">
-          {{ cell === 'R' ? 'Red' : 'Black' }}
+           aria-label="{{ c.board[rowIndex][colIndex] === 'R' ? 'Red Disc' : (c.board[rowIndex][colIndex] === 'B' ? 'Black Disc' : 'Empty Cell') }}">
+        <span class="cf-disc" ng-if="c.board[rowIndex][colIndex]">
+          {{ c.board[rowIndex][colIndex] === 'R' ? 'Red' : 'Black' }}
         </span>
       </div>
+
     </div>
   </div>
 
@@ -390,6 +402,7 @@
       <img ng-if="c.logoUrl" ng-src="{{c.logoUrl}}" alt="Game Logo" class="img-rounded img-responsive" style="display:inline-block; height: 1.5em; vertical-align: middle; margin-left: 5px;">
     </a>
   </div>
-</div>]]></template>
+</div>
+]]></template>
     </sp_widget>
 </record_update>
