@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./logo.png" alt="SN Games Logo" width="250">
+</p>
+
 # 🕹️ SN-Games – ServiceNow Widget Pack
 
 A scoped application offering responsive, interactive game widgets for the ServiceNow Service Portal. Built with AngularJS and fully customizable via widget options to match your brand or Service Portal theme.
@@ -60,6 +64,11 @@ To run these scoped widgets, you’ll need:
 
 ### 🔖 Release 2: Connect Four
 
+<p align="center">
+  <img src="./ConnectFourGame.png" alt="Connect Four Game Screenshot" width="480">
+</p>
+
+
 📅 Release Date: 2025-04-10\
 🎮 Game Included: **Connect Four**
 
@@ -79,6 +88,11 @@ To run these scoped widgets, you’ll need:
 ---
 
 ### 🔖 Release 1: Tic Tac Toe
+
+<p align="center">
+  <img src="./TicTacToeGame.png" alt="Tic Tac Toe Game Screenshot" width="480">
+</p>
+
 
 📅 Release Date: 2025-04-02\
 🎮 Game Included: **Tic Tac Toe**
