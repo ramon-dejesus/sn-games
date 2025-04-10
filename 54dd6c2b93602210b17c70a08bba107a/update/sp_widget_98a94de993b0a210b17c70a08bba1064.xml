@@ -30,12 +30,18 @@
  * and disables CPU thinking.
  */
 	c.resetGame = function() {
-		c.board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
-		c.currentPlayer = 'R';
-		c.winner = null;
-		c.isDraw = false;
-		c.cpuThinking = false;
-		c.winningKeys = null;
+		try {
+			c.board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+			c.currentPlayer = 'R';
+			c.winner = null;
+			c.isDraw = false;
+			c.cpuThinking = false;
+			c.winningKeys = null;
+		}
+		catch (error) {
+			let errorMessage = "Error: Could not reset game due to: " + JSON.stringify(error);
+			console.error(errorMessage);
+		}
 	};
 
 	/**
@@ -51,7 +57,7 @@
 		try {
 
 			if (typeof row !== 'number' || typeof col !== 'number' || !player) {
-				throw "row or col or player were not received";
+				throw new Error("row or col or player were not received");
 			}			
 			const directions = [
 				[0, 1],   // horizontal
@@ -115,13 +121,13 @@
 		try {
 			if (typeof col !== 'number' || col < 0 || col >= COLS)
 			{
-				throw "col was not received";
+				throw new Error("col was not received");
 			}
 
 			if (c.winner || c.isDraw) {
 				c.cpuThinking = false;
-				return
-			};
+				return;
+			}
 
 			for (let row = ROWS - 1; row >= 0; row--) {
 				if (!c.board[row][col]) {
@@ -190,7 +196,7 @@
 		try {
 			if (typeof row !== 'number' || typeof col !== 'number' || row < 0 || row >= ROWS || col < 0 || col >= COLS)
 			{
-				throw "row or col were not received";
+				throw new Error("row or col were not received");
 			}
 
 
@@ -226,7 +232,7 @@
 			c.cpuThinking = true;
 
 			$timeout(function() {
-				let availableCols = [];
+				const availableCols = [];
 				for (let col = 0; col < COLS; col++) {
 					if (c.board[0][col] === null) availableCols.push(col);
 				}
@@ -511,14 +517,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-09 00:49:39</sys_created_on>
         <sys_id>98a94de993b0a210b17c70a08bba1064</sys_id>
-        <sys_mod_count>113</sys_mod_count>
+        <sys_mod_count>116</sys_mod_count>
         <sys_name>Connect Four Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_98a94de993b0a210b17c70a08bba1064</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-10 18:27:17</sys_updated_on>
+        <sys_updated_on>2025-04-10 18:56:03</sys_updated_on>
         <template><![CDATA[<div class="sn-games-connectfour p-4" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
 
   <div class="text-center mb-4">
