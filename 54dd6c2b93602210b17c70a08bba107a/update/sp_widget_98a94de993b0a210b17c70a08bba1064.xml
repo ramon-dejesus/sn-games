@@ -81,6 +81,7 @@
 		for (let row = ROWS - 1; row >= 0; row--) {
 			if (!c.board[row][col]) {
 				c.board[row][col] = c.currentPlayer;
+
 				var winningLine = checkWinner(row, col, c.currentPlayer);
 				if (winningLine) {
 					c.winner = c.currentPlayer;
@@ -91,11 +92,13 @@
 					c.isDraw = true;
 				} else {
 					c.currentPlayer = c.currentPlayer === 'R' ? 'B' : 'R';
+
+					if (c.mode === 'pvc' && c.currentPlayer === 'B') {
+						c.makeCpuMove();
+					}
 				}
 
-				$scope.$applyAsync();				
-
-
+				$scope.$applyAsync();
 				return;
 			}
 		}
@@ -128,6 +131,59 @@
 		console.log(cellClass);
 
 		return cellClass;
+	};
+
+	// CPU move logic for PVC mode
+	c.makeCpuMove = function() {
+		if (c.winner || c.isDraw) return;
+		c.cpuThinking = true;
+
+		$timeout(function() {
+			let availableCols = [];
+			for (let col = 0; col < COLS; col++) {
+				if (c.board[0][col] === null) availableCols.push(col);
+			}
+
+			function getLowestEmptyRow(col) {
+				for (let row = ROWS - 1; row >= 0; row--) {
+					if (c.board[row][col] === null) return row;
+				}
+				return -1;
+			}
+
+			// Try to win
+			for (let col of availableCols) {
+				let row = getLowestEmptyRow(col);
+				if (row !== -1) {
+					c.board[row][col] = 'B';
+					if (checkWinner(row, col, 'B')) {
+						c.board[row][col] = null;
+						c.cpuThinking = false;
+						return c.dropDisc(col);
+					}
+					c.board[row][col] = null;
+				}
+			}
+
+			// Try to block
+			for (let col of availableCols) {
+				let row = getLowestEmptyRow(col);
+				if (row !== -1) {
+					c.board[row][col] = 'R';
+					if (checkWinner(row, col, 'R')) {
+						c.board[row][col] = null;
+						c.cpuThinking = false;
+						return c.dropDisc(col);
+					}
+					c.board[row][col] = null;
+				}
+			}
+
+			// Random fallback
+			const choice = availableCols[Math.floor(Math.random() * availableCols.length)];
+			c.dropDisc(choice);
+			c.cpuThinking = false;
+		}, 500);
 	};
 
 	// On load
@@ -405,14 +461,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-09 00:49:39</sys_created_on>
         <sys_id>98a94de993b0a210b17c70a08bba1064</sys_id>
-        <sys_mod_count>65</sys_mod_count>
+        <sys_mod_count>68</sys_mod_count>
         <sys_name>Connect Four Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_98a94de993b0a210b17c70a08bba1064</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-10 16:02:42</sys_updated_on>
+        <sys_updated_on>2025-04-10 16:40:15</sys_updated_on>
         <template><![CDATA[<!-- Connect Four Widget HTML Template -->
 <div class="sn-games-connectfour p-4" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
 
