@@ -2,55 +2,120 @@
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
         <client_script><![CDATA[api.controller = function($scope) {
-  var c = this;
+	var c = this;
 
-  // Widget Option Bindings
-  c.mode = c.data.options.default_game_mode || "pvp";
-  c.backgroundColorHex = c.data.options.backgroun_color_hex || "#fff";
-  c.fontColorHex = c.data.options.font_color_hex || "#000000";
-  c.borderColorHex = c.fontColorHex;
-  c.fontFamily = c.data.options.font_family || "Arial, sans-serif";
-  c.logoUrl = c.data.options.logo_url || "../sn_games_logo.png";
-  c.providerUrl = c.data.options.provider_url || "https://github.com/ramon-dejesus/sn-games";
+	// Widget Option Bindings
+	c.mode = c.data.options.default_game_mode || "pvp";
+	c.backgroundColorHex = c.data.options.backgroun_color_hex || "#fff";
+	c.fontColorHex = c.data.options.font_color_hex || "#000000";
+	c.borderColorHex = c.fontColorHex;
+	c.fontFamily = c.data.options.font_family || "Arial, sans-serif";
+	c.logoUrl = c.data.options.logo_url || "../sn_games_logo.png";
+	c.providerUrl = c.data.options.provider_url || "https://github.com/ramon-dejesus/sn-games";
 
-  const ROWS = 6;
-  const COLS = 7;
+	const ROWS = 6;
+	const COLS = 7;
 
-  // Game State
-  c.board = [];
-  c.currentPlayer = 'R';
-  c.winner = null;
-  c.isDraw = false;
+	// Game State
+	c.board = [];
+	c.currentPlayer = 'R';
+	c.winner = null;
+	c.isDraw = false;
 	c.cpuThinking = false;
+	c.winningKeys = null;
 
-  // Initialize Board
-  c.resetGame = function() {
-    c.board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
-    c.currentPlayer = 'R';
-    c.winner = null;
-    c.isDraw = false;
+	// Initialize Board
+	c.resetGame = function() {
+		c.board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+		c.currentPlayer = 'R';
+		c.winner = null;
+		c.isDraw = false;
 		c.cpuThinking = false;
-  };
+		c.winningKeys = null;
+	};
 
-  // Drop disc into the selected column
-  c.dropDisc = function(col) {
-    if (c.winner || c.isDraw) return;
+	function checkWinner(row, col, player) {
+		const directions = [
+			[0, 1],   // horizontal
+			[1, 0],   // vertical
+			[1, 1],   // diagonal down-right
+			[1, -1]   // diagonal down-left
+		];
 
-    for (let row = ROWS - 1; row >= 0; row--) {
-			
-      if (!c.board[row][col]) {
-        c.board[row][col] = c.currentPlayer;        
-        c.currentPlayer = c.currentPlayer === 'R' ? 'B' : 'R';
-        $scope.$applyAsync();
-        return;
-      }
-    }
+		for (let [dr, dc] of directions) {
+			let matches = [[row, col]];
 
-    console.log("Column full:", col);
-  };
+			// Forward direction
+			let r = row + dr;
+			let cIdx = col + dc;
+			while (r >= 0 && r < ROWS && cIdx >= 0 && cIdx < COLS && c.board[r][cIdx] === player) {
+				matches.push([r, cIdx]);
+				r += dr;
+				cIdx += dc;
+			}
 
-  // On load
-  c.resetGame();
+			// Backward direction
+			r = row - dr;
+			cIdx = col - dc;
+			while (r >= 0 && r < ROWS && cIdx >= 0 && cIdx < COLS && c.board[r][cIdx] === player) {
+				matches.unshift([r, cIdx]);
+				r -= dr;
+				cIdx -= dc;
+			}
+
+			if (matches.length >= 4) return matches;
+		}
+
+		return null;
+	}
+
+	function isBoardFull() {
+		return c.board.every(row => row.every(cell => cell));
+	}
+
+
+	// Drop disc into the selected column
+	c.dropDisc = function(col) {
+		if (c.winner || c.isDraw) return;
+
+		for (let row = ROWS - 1; row >= 0; row--) {
+			if (!c.board[row][col]) {
+				c.board[row][col] = c.currentPlayer;
+				var winningLine = checkWinner(row, col, c.currentPlayer);
+				if (winningLine) {
+					c.winner = c.currentPlayer;
+					c.winningKeys = winningLine.map(([r, cIdx]) => `r${r}c${cIdx}`);
+				} else if (isBoardFull()) {
+					c.isDraw = true;
+				} else {
+					c.currentPlayer = c.currentPlayer === 'R' ? 'B' : 'R';
+				}
+
+				$scope.$applyAsync();				
+
+
+				return;
+			}
+		}
+
+		console.log("Column full:", col);
+	};
+
+
+
+	c.getCellClass = function(row, col) {
+		const base = c.board[row][col];
+		const key = `r${row}c${col}`;
+		const isWinner = c.winningKeys && c.winningKeys.indexOf(key) !== -1;
+		return {
+			'cf-red': base === 'R',
+			'cf-black': base === 'B',
+			'cf-win': isWinner
+		};
+	};
+
+	// On load
+	c.resetGame();
 };
 ]]></client_script>
         <controller_as>c</controller_as>
@@ -298,14 +363,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-09 00:49:39</sys_created_on>
         <sys_id>98a94de993b0a210b17c70a08bba1064</sys_id>
-        <sys_mod_count>31</sys_mod_count>
+        <sys_mod_count>47</sys_mod_count>
         <sys_name>Connect Four Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_98a94de993b0a210b17c70a08bba1064</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-09 23:21:25</sys_updated_on>
+        <sys_updated_on>2025-04-10 01:58:31</sys_updated_on>
         <template><![CDATA[<!-- Connect Four Widget HTML Template -->
 <div class="sn-games-connectfour p-4" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
 
@@ -325,6 +390,17 @@
     [tabindex]:focus {
       outline: 3px solid #007bff;
     }
+    
+   .cf-win {
+      animation: flash 1s infinite;
+      box-shadow: 0 0 10px 4px #ffcc00;
+    }
+
+  @keyframes flash {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
     
   </style>
 
@@ -357,10 +433,21 @@
     </div>
   </div>
 
-  <div class="text-center pb-2" ng-if="!c.winner && !c.isDraw">
-    <p class="text-lg font-bold" aria-live="polite">
+  <div class="text-center pb-2" aria-live="polite">
+    <p class="text-lg font-bold" ng-if="!c.winner && !c.isDraw">
       Current Turn:
-      <span ng-class="{ 'cf-red': c.currentPlayer === 'R', 'cf-black': c.currentPlayer === 'B' }" class="label">{{c.currentPlayer}}</span>
+      <span ng-class="{ 'cf-red': c.currentPlayer === 'R', 'cf-black': c.currentPlayer === 'B' }" class="label">
+        {{c.currentPlayer === 'R' ? 'Red' : 'Black'}}
+      </span>
+    </p>
+    <p class="text-lg font-bold" ng-if="c.winner">
+      ]]>🎉<![CDATA[ Winner:
+      <span ng-class="{ 'cf-red': c.winner === 'R', 'cf-black': c.winner === 'B' }" class="label">
+        {{c.winner === 'R' ? 'Red' : 'Black'}}
+      </span>
+    </p>
+    <p class="text-lg font-bold" ng-if="c.isDraw">
+      ]]>🤝<![CDATA[ It's a draw!
     </p>
   </div>
 
@@ -386,7 +473,7 @@
       <!-- Stack each row from top to bottom (bottom row is index 5) -->
       <div class="cf-cell w-16 h-16 border border-gray-500 flex items-center justify-center rounded-full text-sm"
            ng-repeat="rowIndex in [0,1,2,3,4,5] track by rowIndex"
-           ng-class="{ 'cf-red': c.board[rowIndex][colIndex] === 'R', 'cf-black': c.board[rowIndex][colIndex] === 'B' }"
+           ng-class="c.getCellClass(rowIndex, colIndex)"
            role="gridcell"
            aria-label="{{ c.board[rowIndex][colIndex] === 'R' ? 'Red Disc' : (c.board[rowIndex][colIndex] === 'B' ? 'Black Disc' : 'Empty Cell') }}">
         <span class="cf-disc" ng-if="c.board[rowIndex][colIndex]">
