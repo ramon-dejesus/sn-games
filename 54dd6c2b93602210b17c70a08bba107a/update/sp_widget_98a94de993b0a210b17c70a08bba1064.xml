@@ -411,15 +411,15 @@
 .py-5 { padding-top: 2rem !important; padding-bottom: 2rem !important; }
 </css>
         <data_table>sp_instance</data_table>
-        <demo_data>{&#13;
-  "options": {&#13;
-    "background_color_hex": "#ffffff",&#13;
-    "logo_url": "../sn_games_logo.png",&#13;
-    "font_family": "Arial, sans-serif",&#13;
-    "default_game_mode": "pvp",&#13;
-    "font_color_hex": "#000000",&#13;
-    "provider_url": "https://github.com/ramon-dejesus/sn-games"&#13;
-  }&#13;
+        <demo_data>{
+	"options": {
+		"background_color_hex": "#fff",
+			"logo_url": "../sn_games_logo.png",
+				"font_family": "Arial, sans-serif",
+					"default_game_mode": "pvc",
+						"font_color_hex": "#000000",
+							"provider_url": "https://github.com/ramon-dejesus/sn-games"
+	}
 }</demo_data>
         <description>Connect Four is a two-player competitive game widget designed for the ServiceNow Service Portal as part of the sn-games suite. This widget replicates the classic vertical strategy game where players take turns dropping colored discs into a 7-column, 6-row grid. The first player to align four discs horizontally, vertically, or diagonally wins.</description>
         <docs/>
@@ -431,61 +431,7 @@
   
 }]]></link>
         <name>Connect Four Game Widget</name>
-        <option_schema>[&#13;
-  {&#13;
-    "hint": "#fff, Hex color background color for the game.",&#13;
-    "name": "background_color_hex",&#13;
-    "section": "Presentation",&#13;
-    "default_value": "#fff",&#13;
-    "label": "Background Color Hex",&#13;
-    "type": "string"&#13;
-  },&#13;
-  {&#13;
-    "hint": "Optional logo image URL displayed in the widget.",&#13;
-    "name": "logo_url",&#13;
-    "section": "Presentation",&#13;
-    "default_value": "",&#13;
-    "label": "Logo URL",&#13;
-    "type": "string"&#13;
-  },&#13;
-  {&#13;
-    "hint": "Custom font-family to apply inside the widget.",&#13;
-    "name": "font_family",&#13;
-    "section": "Presentation",&#13;
-    "default_value": "Arial, sans-serif",&#13;
-    "label": "Font Family",&#13;
-    "type": "string"&#13;
-  },&#13;
-  {&#13;
-    "hint": "Player vs Player (PVP), Player vs CPU (PVC)",&#13;
-    "name": "default_game_mode",&#13;
-    "section": "Behavior",&#13;
-    "default_value": "pvp",&#13;
-    "label": "Default Game Mode (Player vs CPU)",&#13;
-    "type": "choice",&#13;
-    "choices": [&#13;
-      { "label": "pvp", "value": "pvp" },&#13;
-      { "label": "pvc", "value": "pvc" }&#13;
-    ]&#13;
-  },&#13;
-  {&#13;
-    "hint": "#000, Hexadecimal color value for the font text of game.",&#13;
-    "name": "font_color_hex",&#13;
-    "section": "Presentation",&#13;
-    "default_value": "#000000",&#13;
-    "label": "Font Color Hex",&#13;
-    "type": "string"&#13;
-  },&#13;
-  {&#13;
-    "hint": "This was brought to you by DE JESUS SERVICES, INC. (Modify repo url or your website here.)",&#13;
-    "name": "provider_url",&#13;
-    "section": "Documentation",&#13;
-    "default_value": "https://github.com/ramon-dejesus/sn-games",&#13;
-    "label": "Provider URL",&#13;
-    "type": "string"&#13;
-  }&#13;
-]&#13;
-</option_schema>
+        <option_schema>[{"hint":"#fff, Hex color background color for the game.","name":"background_color_hex","section":"Presentation","default_value":"#fff","label":"Background Color Hex","type":"string"},{"hint":"Optional logo image URL displayed in the widget.","name":"logo_url","section":"Presentation","default_value":"","label":"Logo URL","type":"string"},{"hint":"Custom font-family to apply inside the widget.","name":"font_family","section":"Presentation","default_value":"Arial, sans-serif","label":"Font Family","type":"string"},{"hint":"Player vs Player (PVP), Player vs CPU (PVC)","name":"default_game_mode","section":"Behavior","default_value":"pvc","label":"Default Game Mode (Player vs CPU)","type":"choice","choices":[{"label":"pvp","value":"pvp"},{"label":"pvc","value":"pvc"}]},{"hint":"#000, Hexadecimal color value for the font text of game.","name":"font_color_hex","section":"Presentation","default_value":"#000000","label":"Font Color Hex","type":"string"},{"hint":"This was brought to you by DE JESUS SERVICES, INC. (Modify repo url or your website here.)","name":"provider_url","section":"Documentation","default_value":"https://github.com/ramon-dejesus/sn-games","label":"Provider URL","type":"string"}]</option_schema>
         <public>false</public>
         <roles/>
         <script><![CDATA[(function() {
@@ -501,14 +447,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-09 00:49:39</sys_created_on>
         <sys_id>98a94de993b0a210b17c70a08bba1064</sys_id>
-        <sys_mod_count>94</sys_mod_count>
+        <sys_mod_count>96</sys_mod_count>
         <sys_name>Connect Four Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_98a94de993b0a210b17c70a08bba1064</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-10 17:19:17</sys_updated_on>
+        <sys_updated_on>2025-04-10 17:36:50</sys_updated_on>
         <template><![CDATA[<div class="sn-games-connectfour p-4" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
 
   <div class="text-center mb-4">
