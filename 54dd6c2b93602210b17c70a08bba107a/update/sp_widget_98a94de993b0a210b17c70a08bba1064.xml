@@ -313,8 +313,7 @@
 .py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
 .py-3 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
 .py-4 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
-.py-5 { padding-top: 2rem !important; padding-bottom: 2rem !important; }
-</css>
+.py-5 { padding-top: 2rem !important; padding-bottom: 2rem !important; }</css>
         <data_table>sp_instance</data_table>
         <demo_data>{&#13;
   "options": {&#13;
@@ -406,21 +405,16 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-09 00:49:39</sys_created_on>
         <sys_id>98a94de993b0a210b17c70a08bba1064</sys_id>
-        <sys_mod_count>64</sys_mod_count>
+        <sys_mod_count>65</sys_mod_count>
         <sys_name>Connect Four Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_98a94de993b0a210b17c70a08bba1064</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-10 15:44:50</sys_updated_on>
+        <sys_updated_on>2025-04-10 16:02:42</sys_updated_on>
         <template><![CDATA[<!-- Connect Four Widget HTML Template -->
 <div class="sn-games-connectfour p-4" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
-
-  <style>
-    
-
-  </style>
 
   <div class="text-center mb-4">
     <h2 class="text-xl font-bold">Connect Four</h2>
