@@ -24,7 +24,11 @@
 	c.cpuThinking = false;
 	c.winningKeys = null;
 
-	// Initialize Board
+	/**
+ * Resets the game state to start a new game.
+ * Initializes an empty board, resets current player, winner, draw state,
+ * and disables CPU thinking.
+ */
 	c.resetGame = function() {
 		c.board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
 		c.currentPlayer = 'R';
@@ -34,187 +38,247 @@
 		c.winningKeys = null;
 	};
 
+	/**
+ * Checks if the current move resulted in a win by evaluating connected discs
+ * in all 4 directions: horizontal, vertical, and diagonals.
+ *
+ * @param {number} row - Row index of the last move.
+ * @param {number} col - Column index of the last move.
+ * @param {string} player - The current player's marker ('R' or 'B').
+ * @returns {Array|false} Returns array of winning coordinates if win detected, otherwise false.
+ */
 	function checkWinner(row, col, player) {
-		const directions = [
-			[0, 1],   // horizontal
-			[1, 0],   // vertical
-			[1, 1],   // diagonal down-right
-			[1, -1]   // diagonal down-left
-		];
+		try {
 
-		for (let [dr, dc] of directions) {
-			let matches = [[row, col]];
+			if (typeof row !== 'number' || typeof col !== 'number' || !player) {
+				throw "row or col or player were not received";
+			}			
+			const directions = [
+				[0, 1],   // horizontal
+				[1, 0],   // vertical
+				[1, 1],   // diagonal down-right
+				[1, -1]   // diagonal down-left
+			];
 
-			// Forward direction
-			let r = row + dr;
-			let cIdx = col + dc;
-			while (r >= 0 && r < ROWS && cIdx >= 0 && cIdx < COLS && c.board[r][cIdx] === player) {
-				matches.push([r, cIdx]);
-				r += dr;
-				cIdx += dc;
+			for (let [dr, dc] of directions) {
+				let matches = [[row, col]];
+
+				// Forward direction
+				let r = row + dr;
+				let cIdx = col + dc;
+				while (r >= 0 && r < ROWS && cIdx >= 0 && cIdx < COLS && c.board[r][cIdx] === player) {
+					matches.push([r, cIdx]);
+					r += dr;
+					cIdx += dc;
+				}
+
+				// Backward direction
+				r = row - dr;
+				cIdx = col - dc;
+				while (r >= 0 && r < ROWS && cIdx >= 0 && cIdx < COLS && c.board[r][cIdx] === player) {
+					matches.unshift([r, cIdx]);
+					r -= dr;
+					cIdx -= dc;
+				}
+
+				if (matches.length >= 4) return matches;
 			}
 
-			// Backward direction
-			r = row - dr;
-			cIdx = col - dc;
-			while (r >= 0 && r < ROWS && cIdx >= 0 && cIdx < COLS && c.board[r][cIdx] === player) {
-				matches.unshift([r, cIdx]);
-				r -= dr;
-				cIdx -= dc;
-			}
+			return false;
 
-			if (matches.length >= 4) return matches;
 		}
-
-		return null;
+		catch (error) {
+			let errorMessage = "Error: Checking Winner due to: " + JSON.stringify(error);
+			console.error(errorMessage);
+		}
 	}
 
+	/**
+ * Checks if the board is completely filled with discs.
+ * 
+ * @returns {boolean} True if no empty cells remain.
+ */
 	function isBoardFull() {
 		return c.board.every(row => row.every(cell => cell));
 	}
 
 
-	// Drop disc into the selected column
-	c.dropDisc = function(col, isCpuMove) {
-		if (c.winner || c.isDraw) {
-			c.cpuThinking = false;
-			return
-		};
+	/**
+ * Handles dropping a disc into a selected column.
+ * Evaluates for a win or draw, manages turn switching,
+ * and triggers CPU move if needed.
+ *
+ * @param {number} col - Column index to drop the disc into.
+ * @param {boolean} [isCpuMove=false] - Flag indicating if the move is made by the CPU.
+ */
+	c.dropDisc = function(col, isCpuMove = false) {
+		try {
+			if (typeof col !== 'number' || col < 0 || col >= COLS)
+			{
+				throw "col was not received";
+			}
 
-		for (let row = ROWS - 1; row >= 0; row--) {
-			if (!c.board[row][col]) {
-				c.board[row][col] = c.currentPlayer;
+			if (c.winner || c.isDraw) {
+				c.cpuThinking = false;
+				return
+			};
 
-				var winningLine = checkWinner(row, col, c.currentPlayer);
-				if (winningLine) {
-					c.winner = c.currentPlayer;
-					c.winningKeys = winningLine.map(function(pos) {
-						return 'r' + pos[0] + 'c' + pos[1];
-					});
-					
-					
-					
-					if (isCpuMove) {
-						c.cpuThinking = false;
+			for (let row = ROWS - 1; row >= 0; row--) {
+				if (!c.board[row][col]) {
+					c.board[row][col] = c.currentPlayer;
+
+					let winningLine = checkWinner(row, col, c.currentPlayer);
+					if (winningLine) {
+						c.winner = c.currentPlayer;
+						c.winningKeys = winningLine.map(function(pos) {
+							return 'r' + pos[0] + 'c' + pos[1];
+						});
+
+						if (isCpuMove) {
+							c.cpuThinking = false;
+						}
+
+						$scope.$applyAsync();
+						return;
 					}
-					
-					$scope.$applyAsync();
-					return;
-				}
 
-				if (isBoardFull()) {
-					c.isDraw = true;
-					$scope.$applyAsync();
-					if (isCpuMove) {
+					if (isBoardFull()) {
+						c.isDraw = true;
+						$scope.$applyAsync();
+						if (isCpuMove) {
+							$timeout(function() {
+								c.cpuThinking = false;
+							}, 0);
+						}
+						return;
+					}
+
+					// Game continues
+					c.currentPlayer = c.currentPlayer === 'R' ? 'B' : 'R';
+
+					if (isCpuMove && c.currentPlayer === 'R') {
 						$timeout(function() {
 							c.cpuThinking = false;
 						}, 0);
 					}
+
+					if (c.mode === 'pvc' && c.currentPlayer === 'B' && !isCpuMove) {
+						c.makeCpuMove();
+					}
+
+					$scope.$applyAsync();
 					return;
 				}
-
-				// Game continues
-				c.currentPlayer = c.currentPlayer === 'R' ? 'B' : 'R';
-
-				if (isCpuMove && c.currentPlayer === 'R') {
-					$timeout(function() {
-						c.cpuThinking = false;
-					}, 0);
-				}
-
-				if (c.mode === 'pvc' && c.currentPlayer === 'B' && !isCpuMove) {
-					c.makeCpuMove();
-				}
-
-				$scope.$applyAsync();
-				return;
 			}
+
+		}
+		catch (error) {
+			let errorMessage = "Error: Dropping disc due to: " + JSON.stringify(error);
+			console.error(errorMessage);
+		}
+	};
+
+
+	/**
+ * Computes the CSS classes for a given cell based on player and win state.
+ *
+ * @param {number} row - Row index of the cell.
+ * @param {number} col - Column index of the cell.
+ * @returns {string} A space-separated string of class names (e.g., 'cf-red cf-win').
+ */
+	c.getCellClass = function(row, col) {
+		try {
+			if (typeof row !== 'number' || typeof col !== 'number' || row < 0 || row >= ROWS || col < 0 || col >= COLS)
+			{
+				throw "row or col were not received";
+			}
+
+
+			const base = c.board[row][col];
+			if (!base) return '';
+
+			const key = "r"+row+"c"+col;
+			const isWinner = c.winningKeys && c.winningKeys.indexOf(key) !== -1;
+
+			let classes = [];
+
+			if (base === 'R') classes.push('cf-red');
+			if (base === 'B') classes.push('cf-black');
+			if (isWinner) classes.push('cf-win');
+
+			return classes.join(' ');
+		}
+		catch (error) {
+			let errorMessage = "Error: Getting Cell Class due to: " + JSON.stringify(error);
+			console.error(errorMessage);
 		}
 
-		console.log("Column full:", col);
 	};
 
-
-
-	c.getCellClass = function(row, col) {
-
-		console.log("row: " + row + " col: " + col);
-
-		const base = c.board[row][col];
-		if (!base) return '';
-
-		const key = "r"+row+"c"+col;
-		console.log("Checking key:", key);
-		console.log("Winning keys:", c.winningKeys);
-		const isWinner = c.winningKeys && c.winningKeys.indexOf(key) !== -1;
-
-		let classes = [];
-
-		if (base === 'R') classes.push('cf-red');
-		if (base === 'B') classes.push('cf-black');
-		if (isWinner) classes.push('cf-win');
-
-		var cellClass = classes.join(' ');
-
-		console.log(cellClass);
-
-		return cellClass;
-	};
-
-	// CPU move logic for PVC mode
+	/**
+ * Executes the CPU's turn in PvC mode.
+ * Attempts to win, block the player, or chooses a random valid column.
+ * Delays execution to simulate CPU thinking time.
+ */
 	c.makeCpuMove = function() {
-		if (c.winner || c.isDraw) return;
-		c.cpuThinking = true;
+		try {
+			if (c.winner || c.isDraw) return;
+			c.cpuThinking = true;
 
-		$timeout(function() {
-			let availableCols = [];
-			for (let col = 0; col < COLS; col++) {
-				if (c.board[0][col] === null) availableCols.push(col);
-			}
-
-			function getLowestEmptyRow(col) {
-				for (let row = ROWS - 1; row >= 0; row--) {
-					if (c.board[row][col] === null) return row;
+			$timeout(function() {
+				let availableCols = [];
+				for (let col = 0; col < COLS; col++) {
+					if (c.board[0][col] === null) availableCols.push(col);
 				}
-				return -1;
-			}
 
-			// Try to win
-			for (let col of availableCols) {
-				let row = getLowestEmptyRow(col);
-				if (row !== -1) {
-					c.board[row][col] = 'B';
-					if (checkWinner(row, col, 'B')) {
-						c.board[row][col] = null;
-						return c.dropDisc(col, true);
+				function getLowestEmptyRow(col) {
+					for (let row = ROWS - 1; row >= 0; row--) {
+						if (c.board[row][col] === null) return row;
 					}
-					c.board[row][col] = null;
+					return -1;
 				}
-			}
 
-			// Try to block
-			for (let col of availableCols) {
-				let row = getLowestEmptyRow(col);
-				if (row !== -1) {
-					c.board[row][col] = 'R';
-					if (checkWinner(row, col, 'R')) {
+				// Try to win
+				for (let col of availableCols) {
+					let row = getLowestEmptyRow(col);
+					if (row !== -1) {
+						c.board[row][col] = 'B';
+						if (checkWinner(row, col, 'B')) {
+							c.board[row][col] = null;
+							return c.dropDisc(col, true);
+						}
 						c.board[row][col] = null;
-						return c.dropDisc(col, true);
 					}
-					c.board[row][col] = null;
 				}
-			}
 
-			// Random fallback
-			const choice = availableCols[Math.floor(Math.random() * availableCols.length)];
-			c.dropDisc(choice, true);
-		}, 1000);
+				// Try to block
+				for (let col of availableCols) {
+					let row = getLowestEmptyRow(col);
+					if (row !== -1) {
+						c.board[row][col] = 'R';
+						if (checkWinner(row, col, 'R')) {
+							c.board[row][col] = null;
+							return c.dropDisc(col, true);
+						}
+						c.board[row][col] = null;
+					}
+				}
+
+				// Random fallback
+				const choice = availableCols[Math.floor(Math.random() * availableCols.length)];
+				c.dropDisc(choice, true);
+			}, 1000);
+
+		}
+		catch (error) {
+			let errorMessage = "Error: Making CPU move due to: " + JSON.stringify(error);
+			console.error(errorMessage);
+		}
 	};
 
 	// On load
 	c.resetGame();
-};
-]]></client_script>
+};]]></client_script>
         <controller_as>c</controller_as>
         <css>/* Connect Four Widget Styles – Story 6 */
 
@@ -447,14 +511,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-04-09 00:49:39</sys_created_on>
         <sys_id>98a94de993b0a210b17c70a08bba1064</sys_id>
-        <sys_mod_count>97</sys_mod_count>
+        <sys_mod_count>113</sys_mod_count>
         <sys_name>Connect Four Game Widget</sys_name>
         <sys_package display_value="SN GAMES" source="x_71150_sn_games">54dd6c2b93602210b17c70a08bba107a</sys_package>
         <sys_policy/>
         <sys_scope display_value="SN GAMES">54dd6c2b93602210b17c70a08bba107a</sys_scope>
         <sys_update_name>sp_widget_98a94de993b0a210b17c70a08bba1064</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-04-10 17:42:35</sys_updated_on>
+        <sys_updated_on>2025-04-10 18:27:17</sys_updated_on>
         <template><![CDATA[<div class="sn-games-connectfour p-4" ng-style="{ 'font-family': c.fontFamily, 'color': c.fontColorHex, 'background-color': c.backgroundColorHex }">
 
   <div class="text-center mb-4">
@@ -507,16 +571,16 @@
     </p>
   </div>
 
-  <!-- CORRECTED GRID DISPLAY: Use true CSS grid for 7 columns -->
+  <!-- Game Grid: 7 columns, interactive disc drop, keyboard accessible -->
   <div class="game-board cf-grid center-block"
        ng-class="{ 'cpu-disabled': c.cpuThinking }"
        aria-label="Connect Four Board"
        role="grid">
 
-    <!-- Render columns horizontally using CSS grid -->
+    <!-- Columns: Each contains a drop button and vertical stack of 6 discs -->
     <div class="flex flex-col items-center" ng-repeat="colIndex in [0,1,2,3,4,5,6] track by colIndex">
 
-      <!-- Column drop button -->
+      <!-- Drop button for column -->
       <div class="cf-cell w-16 h-16 border border-gray-500 flex items-center justify-center text-md font-bold rounded-full text-white text-center"
            ng-click="!c.cpuThinking && c.dropDisc(colIndex)"
            tabindex="0"
@@ -526,7 +590,7 @@
         ↓
       </div>
 
-      <!-- Stack each row from top to bottom (bottom row is index 5) -->
+      <!-- Discs rendered from top to bottom: index 0 (top) to 5 (bottom) -->
       <div class="cf-cell w-16 h-16 border border-gray-500 flex items-center justify-center rounded-full text-sm"
            ng-repeat="rowIndex in [0,1,2,3,4,5] track by rowIndex"
            ng-class="c.getCellClass(rowIndex, colIndex)"
